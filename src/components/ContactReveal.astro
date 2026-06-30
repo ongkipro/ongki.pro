@@ -1,0 +1,216 @@
+---
+import { Fingerprint, Copy, Check } from '@lucide/astro';
+// NOTE: the email address is intentionally NOT in static HTML.
+// It is assembled in the client script after human verification.
+---
+
+<div class="contact w-full" data-hero="contact">
+  <div class="mb-3 flex items-center gap-3">
+    <span class="font-mono text-[10px] tracking-[0.3em] text-white/30 uppercase">Contact</span>
+    <span class="hairline h-px flex-1"></span>
+  </div>
+
+  <!-- Locked state: human verification -->
+  <div id="contact-locked" class="flex flex-col items-center gap-3 md:items-start">
+    <p class="text-xs text-white/40">Human verification required to reveal contact.</p>
+
+    <button
+      id="hold-btn"
+      type="button"
+      class="glass group hover:border-accent/40 focus-visible:border-accent focus-visible:ring-accent/50 inline-flex touch-none items-center gap-3 rounded-full py-2 pr-5 pl-2 transition-colors duration-300 select-none focus-visible:ring-2 focus-visible:outline-none"
+      aria-label="Hold to reveal email address. Press and hold for two seconds to verify."
+    >
+      <span class="relative grid size-12 place-items-center">
+        <svg class="-rotate-90" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
+          <circle
+            cx="24"
+            cy="24"
+            r="20"
+            fill="none"
+            stroke="rgb(255 255 255 / 0.12)"
+            stroke-width="2"></circle>
+          <circle
+            id="hold-progress"
+            cx="24"
+            cy="24"
+            r="20"
+            fill="none"
+            stroke="var(--color-accent)"
+            stroke-width="2"
+            stroke-linecap="round"></circle>
+        </svg>
+        <Fingerprint
+          class="group-[.holding]:text-accent absolute size-4 text-white/55 transition-colors duration-300"
+          stroke-width={1.75}
+          aria-hidden="true"
+        />
+      </span>
+      <span class="flex flex-col text-left">
+        <span class="text-[11px] font-medium tracking-[0.22em] text-white/75 uppercase">
+          Hold to reveal
+        </span>
+        <span class="text-[10px] text-white/35">Press &amp; hold for 2s</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Revealed state (email injected by JS) -->
+  <div
+    id="contact-revealed"
+    class="flex flex-wrap items-center justify-center gap-3 md:justify-start"
+    hidden
+  >
+    <a
+      id="contact-email"
+      href="#"
+      class="hover:text-accent-bright font-mono text-lg text-white transition-colors md:text-xl"
+    ></a>
+    <button
+      id="copy-btn"
+      type="button"
+      class="glass hover:border-accent/40 focus-visible:border-accent focus-visible:ring-accent/50 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] text-white/70 transition-colors hover:text-white focus-visible:ring-2 focus-visible:outline-none"
+      aria-label="Copy email address to clipboard"
+    >
+      <Copy id="copy-icon" class="size-3.5" stroke-width={1.75} aria-hidden="true" />
+      <Check
+        id="copy-check"
+        class="text-accent hidden size-3.5"
+        stroke-width={2}
+        aria-hidden="true"
+      />
+      <span id="copy-label">Copy</span>
+    </button>
+    <span id="copy-confirm" class="text-accent text-xs opacity-0" role="status" aria-live="polite">
+      Email copied
+    </span>
+  </div>
+</div>
+
+<script>
+  import gsap from 'gsap';
+
+  const HOLD_MS = 2000;
+
+  const btn = document.getElementById('hold-btn');
+  const ring = document.getElementById('hold-progress') as SVGCircleElement | null;
+  const locked = document.getElementById('contact-locked');
+  const revealed = document.getElementById('contact-revealed');
+  const emailEl = document.getElementById('contact-email') as HTMLAnchorElement | null;
+  const copyBtn = document.getElementById('copy-btn');
+  const copyIcon = document.getElementById('copy-icon');
+  const copyCheck = document.getElementById('copy-check');
+  const copyLabel = document.getElementById('copy-label');
+  const copyConfirm = document.getElementById('copy-confirm');
+
+  if (btn && ring && locked && revealed && emailEl) {
+    const C = 2 * Math.PI * 20; // circle circumference (r = 20)
+    ring.style.strokeDasharray = String(C);
+    ring.style.strokeDashoffset = String(C);
+
+    let email = '';
+    let raf = 0;
+    let startedAt = 0;
+    let holding = false;
+    let verified = false;
+
+    const frame = (now: number) => {
+      if (!startedAt) startedAt = now;
+      const p = Math.min(1, (now - startedAt) / HOLD_MS);
+      ring.style.strokeDashoffset = String(C * (1 - p));
+      if (p >= 1) {
+        verify();
+        return;
+      }
+      raf = requestAnimationFrame(frame);
+    };
+
+    const begin = (e?: Event) => {
+      if (verified || holding) return;
+      e?.preventDefault();
+      holding = true;
+      startedAt = 0;
+      btn.classList.add('holding');
+      raf = requestAnimationFrame(frame);
+    };
+
+    const cancel = () => {
+      if (verified || !holding) return;
+      holding = false;
+      cancelAnimationFrame(raf);
+      startedAt = 0;
+      btn.classList.remove('holding');
+      gsap.to(ring, { strokeDashoffset: C, duration: 0.4, ease: 'power2.out', overwrite: true });
+    };
+
+    const verify = () => {
+      verified = true;
+      holding = false;
+      cancelAnimationFrame(raf);
+      ring.style.strokeDashoffset = '0';
+      // Assemble the email only after verification.
+      email = 'get' + '@' + 'ongki.pro';
+      emailEl.textContent = email;
+      emailEl.href = 'mailto:' + email;
+      locked.hidden = true;
+      revealed.hidden = false;
+      gsap.fromTo(
+        revealed,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+      );
+      emailEl.focus();
+      // Tell the header a contact channel is now open.
+      window.dispatchEvent(new CustomEvent('ongki:channel-open'));
+    };
+
+    // Pointer (covers mouse + touch + pen)
+    btn.addEventListener('pointerdown', begin);
+    window.addEventListener('pointerup', cancel);
+    btn.addEventListener('pointerleave', cancel);
+    btn.addEventListener('pointercancel', cancel);
+
+    // Keyboard accessibility (Space / Enter)
+    btn.addEventListener('keydown', (e) => {
+      if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) begin(e);
+    });
+    btn.addEventListener('keyup', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') cancel();
+    });
+
+    // Copy to clipboard
+    let confirmTimer = 0;
+    copyBtn?.addEventListener('click', async () => {
+      if (!email) return;
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        // Fallback for older / insecure contexts
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } catch {
+          /* no-op */
+        }
+        ta.remove();
+      }
+
+      copyIcon?.classList.add('hidden');
+      copyCheck?.classList.remove('hidden');
+      if (copyLabel) copyLabel.textContent = 'Copied';
+      if (copyConfirm) gsap.fromTo(copyConfirm, { opacity: 0 }, { opacity: 1, duration: 0.25 });
+
+      clearTimeout(confirmTimer);
+      confirmTimer = window.setTimeout(() => {
+        copyIcon?.classList.remove('hidden');
+        copyCheck?.classList.add('hidden');
+        if (copyLabel) copyLabel.textContent = 'Copy';
+        if (copyConfirm) gsap.to(copyConfirm, { opacity: 0, duration: 0.4 });
+      }, 1800);
+    });
+  }
+</script>

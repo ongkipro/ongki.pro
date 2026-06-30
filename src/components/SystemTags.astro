@@ -1,0 +1,63 @@
+---
+import { Globe, ShoppingBag, Search, Megaphone, Workflow, Bot } from '@lucide/astro';
+
+// `desc` shows in the readout + index maps to a node cluster in the 3D core.
+const tags = [
+  {
+    label: 'Website Development',
+    icon: Globe,
+    desc: 'High-performance sites engineered for speed and conversion.',
+  },
+  {
+    label: 'Shopify Commerce',
+    icon: ShoppingBag,
+    desc: 'Scalable storefronts and custom commerce architecture.',
+  },
+  {
+    label: 'SEO Infrastructure',
+    icon: Search,
+    desc: 'Technical foundations that compound organic growth.',
+  },
+  {
+    label: 'Meta Ads Systems',
+    icon: Megaphone,
+    desc: 'Data-driven paid social built to scale profitably.',
+  },
+  {
+    label: 'AI Automation',
+    icon: Workflow,
+    desc: 'Workflows that remove manual work from operations.',
+  },
+  { label: 'AI Agents', icon: Bot, desc: 'Autonomous systems that execute and assist at scale.' },
+];
+---
+
+<div class="w-full">
+  <ul class="flex flex-wrap justify-center gap-2 md:justify-start" aria-label="Capabilities">
+    {
+      tags.map(({ label, icon: Icon, desc }, i) => (
+        <li
+          class="system-tag magnetic glass group hover:border-accent/40 hover:bg-accent/[0.06] flex cursor-default items-center gap-2 rounded-full px-3.5 py-2 transition-colors duration-300"
+          data-tag-index={i}
+          data-desc={desc}
+        >
+          <Icon
+            class="text-accent group-hover:text-accent-bright size-3.5 transition-colors duration-300"
+            stroke-width={1.75}
+          />
+          <span class="text-[11px] font-medium tracking-wide text-white/65 transition-colors duration-300 group-hover:text-white/90">
+            {label}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <!-- Readout: reflects the focused capability (height reserved to avoid shift) -->
+  <p
+    id="tag-readout"
+    class="mt-3 min-h-[1.25rem] text-[13px] leading-tight text-white/45 transition-colors duration-300"
+  >
+    Six capabilities, one operating layer.
+  </p>
+</div>

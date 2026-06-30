@@ -1,0 +1,290 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import LoadingScreen from '../components/LoadingScreen.astro';
+import Hero from '../components/Hero.astro';
+
+const title = 'ongki.pro — Building Digital Growth Systems';
+const description =
+  'Websites, AI automation, marketing infrastructure, and scalable commerce systems for modern businesses. Independent digital systems builder.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#04050a" />
+    <meta name="color-scheme" content="dark" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://ongki.pro" />
+    <meta property="og:image" content="https://ongki.pro/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://ongki.pro/og.png" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://ongki.pro" />
+  </head>
+
+  <body>
+    <!-- Ambient background layers -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div id="bg-glow" class="bg-glow" aria-hidden="true"></div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <!-- Three.js Digital Core -->
+    <canvas id="three-core" class="three-canvas" aria-hidden="true"></canvas>
+
+    <!-- Legibility scrim over the core, small screens only -->
+    <div class="hero-scrim pointer-events-none fixed inset-0 z-[3] lg:hidden" aria-hidden="true">
+    </div>
+
+    <!-- Header: no nav, no CTA -->
+    <header class="fixed inset-x-0 top-0 z-50">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
+        <a
+          href="/"
+          data-head
+          class="font-mono text-sm tracking-[0.22em] text-white/90 transition-opacity hover:opacity-70"
+        >
+          ongki<span class="text-accent">.pro</span>
+        </a>
+        <div data-head class="flex items-center gap-2">
+          <span id="sys-dot" class="relative flex size-2" aria-hidden="true">
+            <span
+              class="ping bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"
+            ></span>
+            <span class="bg-accent relative inline-flex size-2 rounded-full"></span>
+          </span>
+          <span
+            id="sys-status"
+            class="font-mono text-[11px] tracking-[0.25em] text-white/60 uppercase"
+          >
+            System Online
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <Hero />
+    </main>
+
+    <LoadingScreen />
+
+    <!-- Orchestration: boot sequence → Three.js reveal → hero entrance -->
+    <script>
+      import gsap from 'gsap';
+      import { ThreeCore } from '../components/ThreeCore';
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* --- Three.js Digital Core --- */
+      let core: ThreeCore | null = null;
+      const canvas = document.getElementById('three-core') as HTMLCanvasElement | null;
+      if (canvas) {
+        try {
+          core = new ThreeCore(canvas, { reducedMotion: prefersReduced });
+          core.start();
+        } catch (err) {
+          // WebGL unavailable → fail gracefully, the page still works.
+          console.warn('[ThreeCore] init failed:', err);
+          canvas.style.display = 'none';
+        }
+      }
+
+      /* --- Idle background glow drift --- */
+      if (!prefersReduced) {
+        gsap.to('#bg-glow', {
+          xPercent: -7,
+          yPercent: 5,
+          duration: 16,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+      }
+
+      /* --- Pre-hide animated elements (loader is opaque, so no flash) --- */
+      if (!prefersReduced) {
+        gsap.set('header [data-head]', { opacity: 0, y: -12 });
+        gsap.set('[data-hero]', { opacity: 0, y: 18 });
+        gsap.set('.word-inner', { yPercent: 112 });
+        gsap.set('.system-tag', { opacity: 0, y: 14, scale: 0.96 });
+      }
+
+      /* --- Boot sequence: counter + status advance together in stages --- */
+      const STEPS = [
+        { label: 'Initializing Infrastructure', to: 16, dur: 0.5 },
+        { label: 'Installing AI Agents', to: 38, dur: 0.7 },
+        { label: 'Loading Digital Core', to: 58, dur: 0.6 },
+        { label: 'Synchronizing Automation', to: 77, dur: 0.6 },
+        { label: 'Optimizing Interface', to: 93, dur: 0.55 },
+        { label: 'System Ready', to: 100, dur: 0.45 },
+      ];
+
+      const percentEl = document.getElementById('loader-percent');
+      const barEl = document.getElementById('loader-bar');
+      const statusEl = document.getElementById('loader-status');
+      let stepIdx = -1;
+
+      const setStatus = (i: number) => {
+        if (i === stepIdx) return;
+        stepIdx = i;
+        const label = STEPS[i].label;
+        if (prefersReduced || !statusEl) {
+          if (statusEl) statusEl.textContent = label;
+          return;
+        }
+        gsap
+          .timeline()
+          .to(statusEl, { opacity: 0, y: -6, duration: 0.16, ease: 'power1.in' })
+          .add(() => {
+            statusEl.textContent = label;
+          })
+          .to(statusEl, { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' });
+      };
+
+      const counter = { v: 0 };
+      const render = () => {
+        if (percentEl) percentEl.textContent = String(Math.round(counter.v)).padStart(3, '0');
+        if (barEl) barEl.style.transform = `scaleX(${counter.v / 100})`;
+      };
+
+      const boot = gsap.timeline({ onComplete: finishLoading });
+      if (prefersReduced) {
+        setStatus(STEPS.length - 1);
+        boot.to(counter, { v: 100, duration: 0.5, onUpdate: render });
+      } else {
+        STEPS.forEach((step, i) => {
+          boot.call(() => setStatus(i));
+          boot.to(counter, {
+            v: step.to,
+            duration: step.dur,
+            ease: 'power2.out',
+            onUpdate: render,
+          });
+          if (i < STEPS.length - 1) boot.to({}, { duration: 0.13 }); // brief settle between stages
+        });
+      }
+
+      function finishLoading() {
+        const loader = document.getElementById('loader');
+        const tl = gsap.timeline();
+        if (loader) {
+          tl.to(loader, {
+            opacity: 0,
+            scale: prefersReduced ? 1 : 1.04,
+            duration: prefersReduced ? 0.2 : 0.7,
+            ease: 'power2.inOut',
+          }).set(loader, { display: 'none' });
+        }
+        tl.add(heroEntrance(), prefersReduced ? '>' : '-=0.3');
+      }
+
+      function heroEntrance() {
+        const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+        if (prefersReduced) {
+          gsap.set(['header [data-head]', '[data-hero]', '.system-tag'], { opacity: 1, y: 0 });
+          gsap.set('.word-inner', { yPercent: 0 });
+          return tl;
+        }
+
+        tl.to('header [data-head]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 })
+          .to('[data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.45')
+          .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.07 }, '-=0.35')
+          .to('[data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7 }, '-=0.6')
+          .to('[data-hero="systemline"]', { opacity: 1, y: 0, duration: 0.5 }, '-=0.5')
+          .to(
+            '.system-tag',
+            { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.055 },
+            '-=0.35',
+          )
+          .to('[data-hero="contact"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.25');
+
+        return tl;
+      }
+
+      /* --- Capability tags ↔ core cluster + readout --- */
+      const readout = document.getElementById('tag-readout');
+      const defaultReadout = readout?.textContent ?? '';
+      const tagEls = Array.from(document.querySelectorAll<HTMLElement>('.system-tag'));
+
+      const focusTag = (i: number, desc: string | null) => {
+        core?.highlight(i);
+        if (readout && desc) {
+          readout.textContent = desc;
+          readout.classList.replace('text-white/45', 'text-white/70');
+        }
+      };
+      const clearTag = () => {
+        core?.highlight(null);
+        if (readout) {
+          readout.textContent = defaultReadout;
+          readout.classList.replace('text-white/70', 'text-white/45');
+        }
+      };
+
+      tagEls.forEach((el) => {
+        const i = Number(el.dataset.tagIndex);
+        const desc = el.getAttribute('data-desc');
+        el.addEventListener('pointerenter', () => focusTag(i, desc));
+        el.addEventListener('pointerleave', clearTag);
+        // Touch: tap to inspect.
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          focusTag(i, desc);
+        });
+      });
+      document.addEventListener('click', (e) => {
+        if (!(e.target as HTMLElement)?.closest('.system-tag')) clearTag();
+      });
+
+      /* --- Magnetic hover (desktop pointer only) --- */
+      const hoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (hoverFine && !prefersReduced) {
+        document.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
+          const xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
+          const yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            xTo((e.clientX - (r.left + r.width / 2)) * 0.3);
+            yTo((e.clientY - (r.top + r.height / 2)) * 0.3);
+          });
+          el.addEventListener('pointerleave', () => {
+            xTo(0);
+            yTo(0);
+          });
+        });
+      }
+
+      /* --- Channel-open state after contact reveal --- */
+      window.addEventListener(
+        'ongki:channel-open',
+        () => {
+          const status = document.getElementById('sys-status');
+          status?.replaceChildren('Channel Open');
+          status?.classList.replace('text-white/60', 'text-accent-bright');
+          document.getElementById('sys-dot')?.classList.add('channel-open');
+        },
+        { once: true },
+      );
+
+      /* --- Cleanup: cancel RAF + dispose GPU resources --- */
+      window.addEventListener('pagehide', () => core?.dispose(), { once: true });
+    </script>
+  </body>
+</html>

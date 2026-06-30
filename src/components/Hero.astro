@@ -1,0 +1,79 @@
+---
+import SystemTags from './SystemTags.astro';
+import ContactReveal from './ContactReveal.astro';
+
+// Split for per-word GSAP stagger. `accent` flags the gradient word.
+const headline = [
+  { text: 'Building' },
+  { text: 'Digital' },
+  { text: 'Growth', accent: true },
+  { text: 'Systems.' },
+];
+---
+
+<section
+  class="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl items-center px-6 pt-28 pb-20 md:px-10 md:pt-0 md:pb-0"
+>
+  <div
+    class="flex w-full max-w-2xl flex-col items-center text-center md:items-start md:text-left lg:max-w-3xl"
+  >
+    <!-- eyebrow -->
+    <p
+      data-hero="eyebrow"
+      class="text-accent/75 flex items-center gap-2.5 font-mono text-[11px] tracking-[0.34em] uppercase"
+    >
+      <span class="bg-accent inline-block size-1.5 rotate-45"></span>
+      Digital Growth Operating System
+    </p>
+
+    <!-- headline -->
+    <h1
+      class="font-display mt-7 text-[clamp(2.25rem,8vw,4.75rem)] leading-[1.02] font-medium tracking-tight text-balance text-white"
+    >
+      {
+        headline.map((word) => (
+          <span class="word">
+            <span
+              class:list={[
+                'word-inner',
+                word.accent &&
+                  'from-accent-bright via-accent to-accent-bright bg-gradient-to-br bg-clip-text text-transparent',
+              ]}
+            >
+              {word.text}&nbsp;
+            </span>
+          </span>
+        ))
+      }
+    </h1>
+
+    <!-- subheadline -->
+    <p data-hero="sub" class="mt-6 max-w-xl text-[15px] leading-relaxed text-white/55 md:text-lg">
+      Websites, AI automation, marketing infrastructure, and scalable commerce systems for modern
+      businesses.
+    </p>
+
+    <!-- system line -->
+    <p
+      data-hero="systemline"
+      class="mt-5 flex items-center gap-2 font-mono text-[10.5px] tracking-[0.2em] text-white/40 uppercase"
+    >
+      <span class="relative flex size-1.5">
+        <span class="bg-accent/70 absolute inline-flex h-full w-full animate-ping rounded-full"
+        ></span>
+        <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
+      </span>
+      Independent digital systems builder
+    </p>
+
+    <!-- capability tags -->
+    <div class="mt-9 w-full">
+      <SystemTags />
+    </div>
+
+    <!-- hidden contact -->
+    <div class="mt-9 w-full max-w-xl">
+      <ContactReveal />
+    </div>
+  </div>
+</section>

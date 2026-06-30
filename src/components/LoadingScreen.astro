@@ -1,0 +1,57 @@
+---
+// Premium boot screen. Progress + status are driven by GSAP in index.astro,
+// which coordinates the fade-out with the hero entrance.
+---
+
+<div
+  id="loader"
+  class="bg-bg fixed inset-0 z-[100] flex flex-col items-center justify-center"
+  role="status"
+  aria-live="polite"
+  aria-label="Loading ongki.pro"
+>
+  <!-- corner labels -->
+  <span
+    class="absolute top-6 left-6 font-mono text-[10px] tracking-[0.3em] text-white/25 uppercase"
+  >
+    System Boot
+  </span>
+  <span
+    class="absolute right-6 bottom-6 font-mono text-[10px] tracking-[0.3em] text-white/25 uppercase"
+  >
+    ongki.pro // OS
+  </span>
+
+  <div class="flex w-[min(420px,82vw)] flex-col items-center gap-6">
+    <div class="font-mono text-sm tracking-[0.4em] text-white/70 uppercase">
+      ongki<span class="text-accent">.pro</span>
+    </div>
+
+    <div class="flex items-end gap-1">
+      <span id="loader-percent" class="font-mono text-6xl font-light text-white tabular-nums">
+        000
+      </span>
+      <span class="text-accent mb-2 font-mono text-xl">%</span>
+    </div>
+
+    <div class="h-px w-full overflow-hidden bg-white/10">
+      <span
+        id="loader-bar"
+        class="from-accent to-accent-bright block h-full w-full origin-left scale-x-0 bg-gradient-to-r shadow-[0_0_10px_rgb(93_123_255_/_0.8)]"
+      ></span>
+    </div>
+
+    <div id="loader-status" class="font-mono text-[11px] tracking-[0.3em] text-white/50 uppercase">
+      Initializing Infrastructure
+    </div>
+  </div>
+</div>
+
+<!-- If JS is disabled, never trap the user behind the loader. -->
+<noscript>
+  <style>
+    #loader {
+      display: none !important;
+    }
+  </style>
+</noscript>

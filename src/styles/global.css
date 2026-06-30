@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens (Tailwind v4 @theme → generates utilities)          */
+/*  Type: Space Grotesk (display) · Inter (body) · JetBrains Mono (data)*/
+/*  One accent: electric blue-violet.                                  */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-bg: #04050a;
+  --color-bg-soft: #090b14;
+  --color-accent: #5d7bff;
+  --color-accent-bright: #9fb4ff;
+
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: rgb(255 255 255 / 0.92);
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv01';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reusable surface — quiet glass used by chips, buttons, dividers     */
+/* ------------------------------------------------------------------ */
+@utility glass {
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background-color: rgb(255 255 255 / 0.025);
+  backdrop-filter: blur(8px);
+}
+
+/* Hairline accent divider used under section labels. */
+@utility hairline {
+  background: linear-gradient(to right, rgb(255 255 255 / 0.18), transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Ambient background layers                                          */
+/* ------------------------------------------------------------------ */
+.bg-grid,
+.bg-glow,
+.bg-noise,
+.bg-vignette {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Thin technical grid, faded toward the edges via radial mask. */
+.bg-grid {
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 64% 45%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 65% at 64% 45%, #000 0%, transparent 78%);
+}
+
+/* Soft radial accent glow — GSAP gently drifts this. */
+.bg-glow {
+  width: 80vmax;
+  height: 80vmax;
+  top: 50%;
+  left: 64%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgb(93 123 255 / 0.2) 0%,
+    rgb(93 123 255 / 0.07) 34%,
+    transparent 64%
+  );
+  filter: blur(16px);
+  will-change: transform;
+}
+
+/* Edge vignette keeps focus toward the core and deepens the frame. */
+.bg-vignette {
+  inset: 0;
+  background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 55%, rgb(2 3 6 / 0.65) 100%);
+}
+
+/* Very subtle film grain (inline SVG, no external asset). */
+.bg-noise {
+  inset: 0;
+  z-index: 2;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The Three.js canvas sits above the ambient layers, below the UI. */
+.three-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* Legibility scrim behind hero copy where the core sits under text
+   (tablet / mobile only). Removed on large screens via utility class. */
+.hero-scrim {
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 42%,
+    rgb(4 5 10 / 0.82) 0%,
+    rgb(4 5 10 / 0.55) 45%,
+    transparent 75%
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Headline word mask (GSAP slides the inner span up into view)       */
+/* ------------------------------------------------------------------ */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.1em;
+}
+.word-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Header status: once a contact channel is open, the dot stops pulsing. */
+.channel-open .ping {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduced motion: strip non-essential animation                      */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bg-glow {
+    will-change: auto;
+  }
+}
