@@ -23,6 +23,36 @@
   </span>
 
   <div class="flex w-[min(420px,82vw)] flex-col items-center gap-6">
+    <!-- Core motif drawn by GSAP DrawSVG, synced to the boot counter (0→100%). -->
+    <svg
+      class="text-accent h-20 w-20"
+      viewBox="0 0 100 100"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.25"
+      aria-hidden="true"
+    >
+      <circle class="boot-draw" cx="50" cy="50" r="46" opacity="0.45"></circle>
+      <ellipse class="boot-draw" cx="50" cy="50" rx="46" ry="16" opacity="0.7"></ellipse>
+      <ellipse
+        class="boot-draw"
+        cx="50"
+        cy="50"
+        rx="46"
+        ry="16"
+        opacity="0.55"
+        transform="rotate(60 50 50)"></ellipse>
+      <ellipse
+        class="boot-draw"
+        cx="50"
+        cy="50"
+        rx="46"
+        ry="16"
+        opacity="0.55"
+        transform="rotate(-60 50 50)"></ellipse>
+      <circle class="boot-draw text-accent-bright" cx="50" cy="50" r="15" stroke-width="2"></circle>
+    </svg>
+
     <div class="font-mono text-sm tracking-[0.4em] text-white/70 uppercase">
       ongki<span class="text-accent">.pro</span>
     </div>

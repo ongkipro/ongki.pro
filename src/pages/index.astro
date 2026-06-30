@@ -132,7 +132,10 @@ const jsonLd = {
     <!-- Orchestration: boot sequence → Three.js reveal → hero entrance -->
     <script>
       import gsap from 'gsap';
+      import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
       import { ThreeCore } from '../components/ThreeCore';
+
+      gsap.registerPlugin(DrawSVGPlugin);
 
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -202,10 +205,17 @@ const jsonLd = {
           .to(statusEl, { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' });
       };
 
+      // Core outline that draws itself in sync with the boot counter.
+      const bootDraw = gsap.utils.toArray<SVGElement>('.boot-draw');
+      gsap.set(bootDraw, { drawSVG: prefersReduced ? '0% 100%' : '0% 0%' });
+
       const counter = { v: 0 };
       const render = () => {
         if (percentEl) percentEl.textContent = String(Math.round(counter.v)).padStart(3, '0');
         if (barEl) barEl.style.transform = `scaleX(${counter.v / 100})`;
+        if (!prefersReduced && bootDraw.length) {
+          gsap.set(bootDraw, { drawSVG: `0% ${counter.v}%` });
+        }
       };
 
       const boot = gsap.timeline({ onComplete: finishLoading });
