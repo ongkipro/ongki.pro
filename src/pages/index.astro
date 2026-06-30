@@ -286,5 +286,25 @@ const description =
       /* --- Cleanup: cancel RAF + dispose GPU resources --- */
       window.addEventListener('pagehide', () => core?.dispose(), { once: true });
     </script>
+
+    <!-- Content guard (production only) — deterrence, not real protection.
+         Blocks right-click, drag, long-press menu, and common view-source/devtools keys. -->
+    <script>
+      if (import.meta.env.PROD) {
+        document.documentElement.classList.add('locked');
+        const stop = (e: Event) => e.preventDefault();
+        document.addEventListener('contextmenu', stop);
+        document.addEventListener('dragstart', stop);
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+          const k = e.key.toLowerCase();
+          const devtools =
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) ||
+            (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || // macOS
+            (e.ctrlKey && (k === 'u' || k === 's')); // view-source / save
+          if (devtools) e.preventDefault();
+        });
+      }
+    </script>
   </body>
 </html>

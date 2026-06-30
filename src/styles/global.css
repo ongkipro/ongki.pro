@@ -150,6 +150,19 @@ body {
   display: none;
 }
 
+/* Content lock (production only — `locked` class is added by a guard script).
+   Deterrence against casual copy/long-press; the email stays selectable. */
+html.locked,
+html.locked * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+html.locked #contact-email {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Reduced motion: strip non-essential animation                      */
 /* ------------------------------------------------------------------ */

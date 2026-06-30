@@ -38,15 +38,15 @@ buttons begging for clicks, just signal.
 
 ## ◆ Highlights
 
-| | |
-|---|---|
-| ⚡ **Boot sequence** | Staged `0 → 100%` loader (`Initializing Infrastructure → … → System Ready`) that fades into the hero. |
-| 🪐 **Digital Core** | A reusable Three.js engine: fresnel-lit orb, wireframe shells, orbiting rings, satellite nodes, traveling **data packets**, and a fogged particle field. |
-| 🔗 **Capability ↔ core** | Hover a capability tag → its node cluster ignites in the 3D core + a one-line readout. |
-| 🛰 **Cursor-aware** | Desktop parallax + the core "wakes up" (glows brighter) as your cursor approaches. |
-| 🔒 **Hidden contact** | Press-and-hold 2s to pass human verification → the email is assembled in JS, never in static HTML. Copy in one tap. Header flips to **Channel Open**. |
-| 🎛 **Tiered performance** | Richest on desktop, lighter on tablet, minimal on mobile; loop pauses when the tab is hidden. |
-| ♿ **Accessible** | `prefers-reduced-motion`, keyboard-operable reveal, semantic HTML, ARIA, readable contrast. |
+|                          |                                                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ⚡ **Boot sequence**     | Staged `0 → 100%` loader (`Initializing Infrastructure → … → System Ready`) that fades into the hero.                                                    |
+| 🪐 **Digital Core**      | A reusable Three.js engine: fresnel-lit orb, wireframe shells, orbiting rings, satellite nodes, traveling **data packets**, and a fogged particle field. |
+| 🔗 **Capability ↔ core** | Hover a capability tag → its node cluster ignites in the 3D core + a one-line readout.                                                                   |
+| 🛰 **Cursor-aware**       | Desktop parallax + the core "wakes up" (glows brighter) as your cursor approaches.                                                                       |
+| 🔒 **Hidden contact**    | Press-and-hold 2s to pass human verification → the email is assembled in JS, never in static HTML. Copy in one tap. Header flips to **Channel Open**.    |
+| 🎛 **Tiered performance** | Richest on desktop, lighter on tablet, minimal on mobile; loop pauses when the tab is hidden.                                                            |
+| ♿ **Accessible**        | `prefers-reduced-motion`, keyboard-operable reveal, semantic HTML, ARIA, readable contrast.                                                              |
 
 > **No external/paid assets.** Fonts are self-hosted; textures, grid, noise, the OG card, and the
 > entire 3D scene are generated at build/runtime.
@@ -85,7 +85,7 @@ import { ThreeCore } from './components/ThreeCore';
 const core = new ThreeCore(canvas, { reducedMotion });
 core.start();
 core.highlight(2); // light up the "SEO Infrastructure" cluster
-core.dispose();    // cancels RAF, frees all GPU resources
+core.dispose(); // cancels RAF, frees all GPU resources
 ```
 
 ---
@@ -153,11 +153,11 @@ public/
 
 ## 📐 Responsive tiers
 
-| Tier | Particles | Nodes | Data packets | Mouse parallax |
-|------|:---------:|:-----:|:------------:|:--------------:|
-| **Desktop** | 1300 | 14 | 5 | ✓ |
-| **Tablet**  |  620 | 12 | 3 | — |
-| **Mobile**  |  240 |  6 | 0 | — |
+| Tier        | Particles | Nodes | Data packets | Mouse parallax |
+| ----------- | :-------: | :---: | :----------: | :------------: |
+| **Desktop** |   1300    |  14   |      5       |       ✓        |
+| **Tablet**  |    620    |  12   |      3       |       —        |
+| **Mobile**  |    240    |   6   |      0       |       —        |
 
 The core rebuilds itself when the viewport crosses a breakpoint, and the render loop pauses while the
 tab is hidden.
@@ -166,13 +166,13 @@ tab is hidden.
 
 ## 🎨 Design system
 
-| Token | Value |
-|-------|-------|
-| Background | `#04050a` |
-| Accent | `#5d7bff` → `#9fb4ff` (single electric blue-violet) |
-| Display | Space Grotesk |
-| Body | Inter |
-| Data / labels | JetBrains Mono |
+| Token         | Value                                               |
+| ------------- | --------------------------------------------------- |
+| Background    | `#04050a`                                           |
+| Accent        | `#5d7bff` → `#9fb4ff` (single electric blue-violet) |
+| Display       | Space Grotesk                                       |
+| Body          | Inter                                               |
+| Data / labels | JetBrains Mono                                      |
 
 ---
 
