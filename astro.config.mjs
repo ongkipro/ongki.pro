@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  // Canonical site URL — used for absolute links and SEO.
+  site: 'https://ongki.pro',
   // Collapse whitespace in the emitted HTML (default true, kept explicit).
   compressHTML: true,
   build: {
