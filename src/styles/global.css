@@ -87,8 +87,8 @@ body {
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle,
-    rgb(var(--glow-rgb) / 0.2) 0%,
-    rgb(var(--glow-rgb) / 0.07) 34%,
+    rgb(from var(--glow) r g b / 0.2) 0%,
+    rgb(from var(--glow) r g b / 0.07) 34%,
     transparent 64%
   );
   filter: blur(16px);
@@ -260,12 +260,30 @@ html.locked #contact-email {
 /*  Tailwind v4 utilities read these CSS vars, so overriding per phase  */
 /*  re-tints the whole UI live.                                         */
 /* ------------------------------------------------------------------ */
-:root { --glow-rgb: 93 123 255; }
+/* Register colour props so a phase change tweens smoothly (auto re-tint). */
+@property --color-accent { syntax: '<color>'; inherits: true; initial-value: #5d7bff; }
+@property --color-accent-bright { syntax: '<color>'; inherits: true; initial-value: #9fb4ff; }
+@property --color-bg { syntax: '<color>'; inherits: true; initial-value: #04050a; }
+@property --color-bg-soft { syntax: '<color>'; inherits: true; initial-value: #090b14; }
+@property --glow { syntax: '<color>'; inherits: true; initial-value: #5d7bff; }
 
-html[data-phase='night'] { --color-bg: #04050a; --color-bg-soft: #090b14; --color-accent: #5d7bff; --color-accent-bright: #9fb4ff; --glow-rgb: 93 123 255; }
-html[data-phase='dawn']  { --color-bg: #0a0912; --color-bg-soft: #130f1e; --color-accent: #9a86ff; --color-accent-bright: #cdbcff; --glow-rgb: 150 130 255; }
-html[data-phase='day']   { --color-bg: #0a1420; --color-bg-soft: #0f1d2e; --color-accent: #38bdf8; --color-accent-bright: #9be0ff; --glow-rgb: 56 189 248; }
-html[data-phase='dusk']  { --color-bg: #100a10; --color-bg-soft: #1c0f14; --color-accent: #ff8a5b; --color-accent-bright: #ffc39b; --glow-rgb: 255 138 91; }
+html { transition: --color-accent 0.9s ease, --color-accent-bright 0.9s ease, --color-bg 1.2s ease, --color-bg-soft 1.2s ease, --glow 1.2s ease; }
+
+/* 8 phases across the WIB day (dini → subuh → pagi → siang → sore → senja → petang → malam) */
+html[data-phase='dini']   { --color-bg:#05060e; --color-bg-soft:#0a0c18; --color-accent:#6f7fd6; --color-accent-bright:#aeb8ee; --glow:#6f7fd6; }
+html[data-phase='subuh']  { --color-bg:#0a0913; --color-bg-soft:#130f1f; --color-accent:#9a86ff; --color-accent-bright:#d0c2ff; --glow:#9a86ff; }
+html[data-phase='pagi']   { --color-bg:#0a1018; --color-bg-soft:#0f1826; --color-accent:#6ba7f5; --color-accent-bright:#b9dcff; --glow:#6ba7f5; }
+html[data-phase='siang']  { --color-bg:#0a1420; --color-bg-soft:#0f1d2e; --color-accent:#38bdf8; --color-accent-bright:#9be0ff; --glow:#38bdf8; }
+html[data-phase='sore']   { --color-bg:#0f1016; --color-bg-soft:#181521; --color-accent:#f0a54a; --color-accent-bright:#ffd39a; --glow:#f0a54a; }
+html[data-phase='senja']  { --color-bg:#110a10; --color-bg-soft:#1d0f14; --color-accent:#ff7a45; --color-accent-bright:#ffc09b; --glow:#ff7a45; }
+html[data-phase='petang'] { --color-bg:#0c0912; --color-bg-soft:#160f1e; --color-accent:#b06a9f; --color-accent-bright:#e6b4d6; --glow:#b06a9f; }
+html[data-phase='malam']  { --color-bg:#04050a; --color-bg-soft:#090b14; --color-accent:#5d7bff; --color-accent-bright:#9fb4ff; --glow:#5d7bff; }
+
+/* aliases so ?phase=day|dusk|dawn|night keep working */
+html[data-phase='day']   { --color-bg:#0a1420; --color-bg-soft:#0f1d2e; --color-accent:#38bdf8; --color-accent-bright:#9be0ff; --glow:#38bdf8; }
+html[data-phase='dusk']  { --color-bg:#110a10; --color-bg-soft:#1d0f14; --color-accent:#ff7a45; --color-accent-bright:#ffc09b; --glow:#ff7a45; }
+html[data-phase='dawn']  { --color-bg:#0a0913; --color-bg-soft:#130f1f; --color-accent:#9a86ff; --color-accent-bright:#d0c2ff; --glow:#9a86ff; }
+html[data-phase='night'] { --color-bg:#04050a; --color-bg-soft:#090b14; --color-accent:#5d7bff; --color-accent-bright:#9fb4ff; --glow:#5d7bff; }
 
 body { transition: background-color 1.2s ease; }
 

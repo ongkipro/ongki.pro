@@ -13,6 +13,24 @@ const description =
   'A digital growth systems builder. Websites, commerce, SEO, paid media, and AI automation — engineered as one operating layer that compounds.';
 const ogImage = `${site}/og.png`;
 
+// Structured data — helps search engines understand the brand/person.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', '@id': `${site}/#website`, url: `${site}/`, name: 'ongki.pro', description, inLanguage: 'en' },
+    {
+      '@type': 'Person',
+      '@id': `${site}/#person`,
+      name: 'Ongki',
+      url: `${site}/`,
+      jobTitle: 'Digital Growth Systems Builder',
+      description,
+      knowsAbout: ['Website Development', 'Shopify Commerce', 'SEO Infrastructure', 'Meta Ads', 'AI Automation', 'AI Agents'],
+      sameAs: ['https://github.com/ongkipro'],
+    },
+  ],
+};
+
 const headline = [{ text: 'Digital' }, { text: 'Growth', accent: true }, { text: 'Systems.' }];
 
 // Blueprint nodes (hero signature)
@@ -55,12 +73,12 @@ const principles = [
 
 // 04 · selected work (real, in production)
 const work = [
-  { name: 'Pixs&Go', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Toys & hobbies storefront (Play & Go).', url: 'pixsgo.com' },
-  { name: 'PetCue', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Pet-care storefront + automated blog engine.', url: 'petcue.co' },
-  { name: 'Dealer Hino', cat: 'Corporate', stack: 'Astro · Cloudflare', desc: 'Official dealer site — 251 pages, edge-deployed.', url: 'dealerhinoofficial.com' },
-  { name: 'RTQ Al-Hadi', cat: 'Institution', stack: 'Astro · Vercel', desc: 'Tahfidz institute — multi-page, live.', url: 'rtqalhadi.com' },
-  { name: 'Heimwerk-Guide', cat: 'Affiliate SEO', stack: 'Astro SSR · Cloudflare', desc: 'German Amazon affiliate engine (D1/KV).', url: 'fitsst.com' },
-  { name: 'Indostore', cat: 'SaaS', stack: 'Next.js · Astro · Postgres', desc: 'Shopify-style commerce platform for Indonesia.', url: '' },
+  { name: 'Pixs&Go', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Toys & hobbies storefront (Play & Go).', metric: '125 products', url: 'pixsgo.com' },
+  { name: 'PetCue', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Pet-care storefront + automated blog engine.', metric: '45 articles', url: 'petcue.co' },
+  { name: 'Dealer Hino', cat: 'Corporate', stack: 'Astro · Cloudflare', desc: 'Official dealer site, edge-deployed.', metric: '251 pages', url: 'dealerhinoofficial.com' },
+  { name: 'RTQ Al-Hadi', cat: 'Institution', stack: 'Astro · Vercel', desc: 'Tahfidz institute — live in production.', metric: '7 pages · live', url: 'rtqalhadi.com' },
+  { name: 'Heimwerk-Guide', cat: 'Affiliate SEO', stack: 'Astro SSR · Cloudflare', desc: 'German Amazon affiliate engine (D1 / KV).', metric: 'de-DE market', url: 'fitsst.com' },
+  { name: 'Indostore', cat: 'SaaS', stack: 'Next.js · Astro · Postgres', desc: 'Shopify-style commerce platform for Indonesia.', metric: '16 modules · 53 tables', url: '' },
 ];
 ---
 
@@ -74,25 +92,46 @@ const work = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Ongki" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ongki.pro" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ongki.pro — Building Digital Growth Systems" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="ongki.pro — Building Digital Growth Systems" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={site} />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 
     <!-- Set the time-of-day phase (WIB) before paint — no colour flash. -->
     <script is:inline>
       (function () {
         try {
+          var VALID = ['dini','subuh','pagi','siang','sore','senja','petang','malam','dawn','day','dusk','night'];
           var forced = new URLSearchParams(location.search).get('phase');
+          function phaseOf(h) {
+            if (h >= 2 && h < 5) return 'dini';
+            if (h >= 5 && h < 6.5) return 'subuh';
+            if (h >= 6.5 && h < 10) return 'pagi';
+            if (h >= 10 && h < 15) return 'siang';
+            if (h >= 15 && h < 17) return 'sore';
+            if (h >= 17 && h < 18.3) return 'senja';
+            if (h >= 18.3 && h < 19.3) return 'petang';
+            return 'malam';
+          }
           var w = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
           var h = w.getHours() + w.getMinutes() / 60;
-          var ph = ['dawn', 'day', 'dusk', 'night'].indexOf(forced) >= 0 ? forced
-            : h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 16 ? 'day' : h >= 16 && h < 19 ? 'dusk' : 'night';
-          document.documentElement.setAttribute('data-phase', ph);
+          document.documentElement.setAttribute('data-phase', VALID.indexOf(forced) >= 0 ? forced : phaseOf(h));
         } catch (e) {
           document.documentElement.setAttribute('data-phase', 'night');
         }
@@ -271,7 +310,11 @@ const work = [
                 </div>
                 <h3 class="font-display mt-6 text-2xl font-semibold tracking-tight text-white">{w.name}</h3>
                 <p class="mt-2 text-[13.5px] leading-relaxed text-white/50">{w.desc}</p>
-                <span class="mt-5 font-mono text-[11px] tracking-wide text-white/35">{w.stack}</span>
+                <div class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] tracking-wide">
+                  <span class="text-accent">{w.metric}</span>
+                  <span class="text-white/25">·</span>
+                  <span class="text-white/35">{w.stack}</span>
+                </div>
                 <span class="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-accent to-transparent transition-[width] duration-500 group-hover:w-full"></span>
               </div>
             ))
@@ -324,16 +367,32 @@ const work = [
 
       /* --- time-of-day phase + celestial position (WIB) --- */
       const forcedPhase = new URLSearchParams(location.search).get('phase');
-      const REP: Record<string, number> = { dawn: 6.3, day: 12, dusk: 17.6, night: 22 };
+      const REP: Record<string, number> = { dini: 3.5, subuh: 5.8, pagi: 8, siang: 12.5, sore: 16, senja: 17.7, petang: 18.8, malam: 22, dawn: 5.8, day: 12.5, dusk: 17.7, night: 22 };
+      const LABELS: Record<string, string> = { dini: 'DINI HARI', subuh: 'SUBUH', pagi: 'PAGI', siang: 'SIANG', sore: 'SORE', senja: 'SENJA', petang: 'PETANG', malam: 'MALAM', dawn: 'SUBUH', day: 'SIANG', dusk: 'SENJA', night: 'MALAM' };
+      const MOON = ['dini', 'petang', 'malam', 'night'];
       const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
-      const phase = document.documentElement.getAttribute('data-phase') || 'night';
+      const phase = document.documentElement.getAttribute('data-phase') || 'malam';
       const hWib = forcedPhase && REP[forcedPhase] != null ? REP[forcedPhase] : wib.getHours() + wib.getMinutes() / 60;
-      const LABELS: Record<string, string> = { dawn: 'SUBUH', day: 'SIANG', dusk: 'SENJA', night: 'MALAM' };
-      const isMoon = phase === 'night';
+      const isMoon = MOON.indexOf(phase) >= 0;
       let pTarget: number;
-      if (isMoon) { const hh = hWib < 5 ? hWib + 24 : hWib; pTarget = (hh - 19) / (29 - 19); }
-      else { pTarget = (hWib - 5) / (19 - 5); }
+      if (isMoon) { const hh = hWib < 5 ? hWib + 24 : hWib; pTarget = (hh - 18.3) / (29 - 18.3); }
+      else { pTarget = (hWib - 5) / (18.3 - 5); }
       pTarget = Math.max(0.05, Math.min(0.95, pTarget));
+
+      // Auto re-tint: re-check the WIB phase periodically (unless ?phase= overrides).
+      if (!forcedPhase) {
+        const phaseAt = (hh: number) =>
+          hh >= 2 && hh < 5 ? 'dini' : hh >= 5 && hh < 6.5 ? 'subuh' : hh >= 6.5 && hh < 10 ? 'pagi'
+          : hh >= 10 && hh < 15 ? 'siang' : hh >= 15 && hh < 17 ? 'sore' : hh >= 17 && hh < 18.3 ? 'senja'
+          : hh >= 18.3 && hh < 19.3 ? 'petang' : 'malam';
+        const retint = () => {
+          const w2 = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+          const np = phaseAt(w2.getHours() + w2.getMinutes() / 60);
+          if (np !== document.documentElement.getAttribute('data-phase')) document.documentElement.setAttribute('data-phase', np);
+        };
+        setInterval(retint, 300000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) retint(); });
+      }
       const arc = (t: number) => { const a = Math.PI - t * Math.PI; return { x: 200 + 160 * Math.cos(a), y: 190 - 160 * Math.sin(a) }; };
 
       const bodyG = document.getElementById('cel-body-g');
@@ -482,13 +541,5 @@ const work = [
       }, { once: true });
     </script>
 
-    <script>
-      if (import.meta.env.PROD) {
-        document.documentElement.classList.add('locked');
-        const stop = (e: Event) => e.preventDefault();
-        document.addEventListener('contextmenu', stop);
-        document.addEventListener('dragstart', stop);
-      }
-    </script>
   </body>
 </html>
