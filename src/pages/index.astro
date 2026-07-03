@@ -1,47 +1,38 @@
 ---
+import '@fontsource-variable/bricolage-grotesque';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
-import LoadingScreen from '../components/LoadingScreen.astro';
-import Hero from '../components/Hero.astro';
 
 const site = 'https://ongki.pro';
 const title = 'ongki.pro — Building Digital Growth Systems';
 const description =
-  'Websites, AI automation, marketing infrastructure, and scalable commerce systems for modern businesses. Independent digital systems builder.';
+  'A digital growth systems builder. Websites, commerce, SEO, paid media, and AI automation — engineered as one operating layer that compounds.';
 const ogImage = `${site}/og.png`;
 
-// Structured data — helps search engines understand the brand/person.
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': `${site}/#website`,
-      url: `${site}/`,
-      name: 'ongki.pro',
-      description,
-      inLanguage: 'en',
-    },
-    {
-      '@type': 'Person',
-      '@id': `${site}/#person`,
-      name: 'Ongki',
-      url: `${site}/`,
-      jobTitle: 'Digital Growth Systems Builder',
-      description,
-      knowsAbout: [
-        'Website Development',
-        'Shopify Commerce',
-        'SEO Infrastructure',
-        'Meta Ads Systems',
-        'AI Automation',
-        'AI Agents',
-      ],
-      sameAs: ['https://github.com/ongkipro'],
-    },
-  ],
+// Hero headline split for per-word kinetic reveal.
+const headline = [{ text: 'Digital' }, { text: 'Growth', accent: true }, { text: 'Systems.' }];
+
+// The operating layer — 6 capabilities feeding one growth engine.
+const nodes = [
+  { id: 'site', label: 'SITE', x: 70, y: 70 },
+  { id: 'shop', label: 'SHOP', x: 70, y: 290 },
+  { id: 'seo', label: 'SEO', x: 250, y: 40 },
+  { id: 'ads', label: 'ADS', x: 250, y: 320 },
+  { id: 'hub', label: 'GROWTH', x: 250, y: 180, hub: true },
+  { id: 'auto', label: 'AUTO', x: 450, y: 95 },
+  { id: 'agent', label: 'AGENT', x: 450, y: 265 },
+];
+const links = [
+  ['site', 'hub'], ['shop', 'hub'], ['seo', 'hub'], ['ads', 'hub'],
+  ['hub', 'auto'], ['hub', 'agent'],
+];
+const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
+const path = (a: string, b: string) => {
+  const p = byId[a], q = byId[b];
+  const mx = (p.x + q.x) / 2;
+  return `M ${p.x} ${p.y} C ${mx} ${p.y}, ${mx} ${q.y}, ${q.x} ${q.y}`;
 };
 ---
 
@@ -50,315 +41,145 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#04050a" />
     <meta name="color-scheme" content="dark" />
-
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Ongki" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="ongki.pro" />
-    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={site} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ongki.pro — Building Digital Growth Systems" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="ongki.pro — Building Digital Growth Systems" />
-
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={site} />
-    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   </head>
 
   <body>
-    <!-- Ambient background layers -->
     <div class="bg-grid" aria-hidden="true"></div>
     <div id="bg-glow" class="bg-glow" aria-hidden="true"></div>
     <div class="bg-vignette" aria-hidden="true"></div>
     <div class="bg-noise" aria-hidden="true"></div>
 
-    <!-- Three.js Digital Core -->
-    <canvas id="three-core" class="three-canvas" aria-hidden="true"></canvas>
-
-    <!-- Legibility scrim over the core, small screens only -->
-    <div class="hero-scrim pointer-events-none fixed inset-0 z-[3] lg:hidden" aria-hidden="true">
-    </div>
-
-    <!-- Header: no nav, no CTA -->
     <header class="fixed inset-x-0 top-0 z-50">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
-        <a
-          href="/"
-          data-head
-          class="font-mono text-sm tracking-[0.22em] text-white/90 transition-opacity hover:opacity-70"
-        >
+        <a data-head href="/" class="font-mono text-sm tracking-[0.22em] text-white/90">
           ongki<span class="text-accent">.pro</span>
         </a>
-        <div data-head class="flex items-center gap-2">
-          <span id="sys-dot" class="relative flex size-2" aria-hidden="true">
-            <span
-              class="ping bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"
-            ></span>
-            <span class="bg-accent relative inline-flex size-2 rounded-full"></span>
+        <div data-head class="eyebrow">
+          <span class="relative flex size-1.5">
+            <span class="bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
+            <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
           </span>
-          <span
-            id="sys-status"
-            class="font-mono text-[11px] tracking-[0.25em] text-white/60 uppercase"
-          >
-            System Online
-          </span>
+          System Online
         </div>
       </div>
     </header>
 
     <main>
-      <Hero />
+      <!-- 01 · HERO -->
+      <section class="relative z-10 flex min-h-[100svh] items-center">
+        <div class="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 md:px-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <!-- copy -->
+          <div class="text-center lg:text-left">
+            <p data-hero="eyebrow" class="eyebrow justify-center lg:justify-start">
+              <span class="tick"></span> <b>01</b> · Digital Growth OS
+            </p>
+
+            <h1 class="display mt-6 text-[clamp(2.5rem,9vw,5.5rem)] text-white">
+              <span class="block word"><span class="word-inner text-white/60">Building</span></span>
+              {
+                headline.map((w) => (
+                  <span class="block word">
+                    <span
+                      class:list={[
+                        'word-inner',
+                        w.accent && 'from-accent-bright via-accent to-accent-bright bg-gradient-to-br bg-clip-text text-transparent',
+                      ]}
+                    >
+                      {w.text}
+                    </span>
+                  </span>
+                ))
+              }
+            </h1>
+
+            <p data-hero="sub" class="mx-auto mt-7 max-w-md text-[15px] leading-relaxed text-white/55 md:text-lg lg:mx-0">
+              Websites, commerce, SEO, paid media, and AI automation — engineered as
+              <span class="text-white/80">one operating layer</span> that compounds.
+            </p>
+
+            <p data-hero="sub" class="mt-8 flex items-center justify-center gap-2 font-mono text-[10.5px] tracking-[0.2em] text-white/40 uppercase lg:justify-start">
+              <span class="tick"></span> Independent systems builder · Indonesia
+            </p>
+          </div>
+
+          <!-- signature: animated System Blueprint -->
+          <div data-hero="blueprint" class="relative mx-auto w-full max-w-[520px]">
+            <svg class="blueprint" viewBox="0 0 520 360" role="img" aria-label="Digital growth system diagram">
+              <g stroke-linecap="round">
+                {links.map(([a, b]) => (
+                  <path class="bp-path" data-link d={path(a, b)} />
+                ))}
+              </g>
+              {
+                nodes.map((n) => (
+                  <g class={`bp-node ${n.hub ? 'is-hub' : ''}`} data-node transform={`translate(${n.x} ${n.y})`}>
+                    <circle r={n.hub ? 26 : 15} />
+                    {n.hub && <circle class="bp-hub-ring" r="34" fill="none" stroke="var(--color-accent)" stroke-opacity="0.35" stroke-dasharray="2 5" />}
+                    <text text-anchor="middle" dy={n.hub ? 3 : -24}>{n.label}</text>
+                  </g>
+                ))
+              }
+            </svg>
+          </div>
+        </div>
+
+        <!-- scroll cue -->
+        <div data-hero="sub" class="absolute inset-x-0 bottom-7 flex justify-center">
+          <div class="eyebrow flex-col gap-1.5">
+            <span>Scroll</span>
+            <span class="scroll-cue"></span>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <LoadingScreen />
+    <style>
+      .scroll-cue { width: 1px; height: 34px; background: linear-gradient(to bottom, var(--color-accent), transparent); position: relative; overflow: hidden; }
+      .scroll-cue::after { content: ''; position: absolute; inset: 0; background: var(--color-accent-bright); animation: cue 1.8s ease-in-out infinite; }
+      @keyframes cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
+      .bp-hub-ring { animation: spin 18s linear infinite; transform-origin: center; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 
-    <!-- Orchestration: boot sequence → Three.js reveal → hero entrance -->
     <script>
       import gsap from 'gsap';
       import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-      import { ThreeCore } from '../components/ThreeCore';
-
       gsap.registerPlugin(DrawSVGPlugin);
 
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      /* --- Three.js Digital Core --- */
-      let core: ThreeCore | null = null;
-      const canvas = document.getElementById('three-core') as HTMLCanvasElement | null;
-      if (canvas) {
-        try {
-          core = new ThreeCore(canvas, { reducedMotion: prefersReduced });
-          core.start();
-        } catch (err) {
-          // WebGL unavailable → fail gracefully, the page still works.
-          console.warn('[ThreeCore] init failed:', err);
-          canvas.style.display = 'none';
-        }
-      }
+      if (!reduce) {
+        gsap.to('#bg-glow', { xPercent: -7, yPercent: 5, duration: 16, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
-      /* --- Idle background glow drift --- */
-      if (!prefersReduced) {
-        gsap.to('#bg-glow', {
-          xPercent: -7,
-          yPercent: 5,
-          duration: 16,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
-      }
-
-      /* --- Pre-hide animated elements (loader is opaque, so no flash) --- */
-      if (!prefersReduced) {
         gsap.set('header [data-head]', { opacity: 0, y: -12 });
         gsap.set('[data-hero]', { opacity: 0, y: 18 });
-        gsap.set('.word-inner', { yPercent: 112 });
-        gsap.set('.system-tag', { opacity: 0, y: 14, scale: 0.96 });
-      }
+        gsap.set('.word-inner', { yPercent: 115 });
+        gsap.set('[data-link]', { drawSVG: '0%' });
+        gsap.set('[data-node]', { opacity: 0, scale: 0.6, transformOrigin: 'center' });
 
-      /* --- Boot sequence: counter + status advance together in stages --- */
-      const STEPS = [
-        { label: 'Initializing Infrastructure', to: 16, dur: 0.5 },
-        { label: 'Installing AI Agents', to: 38, dur: 0.7 },
-        { label: 'Loading Digital Core', to: 58, dur: 0.6 },
-        { label: 'Synchronizing Automation', to: 77, dur: 0.6 },
-        { label: 'Optimizing Interface', to: 93, dur: 0.55 },
-        { label: 'System Ready', to: 100, dur: 0.45 },
-      ];
-
-      const percentEl = document.getElementById('loader-percent');
-      const barEl = document.getElementById('loader-bar');
-      const statusEl = document.getElementById('loader-status');
-      let stepIdx = -1;
-
-      const setStatus = (i: number) => {
-        if (i === stepIdx) return;
-        stepIdx = i;
-        const label = STEPS[i].label;
-        if (prefersReduced || !statusEl) {
-          if (statusEl) statusEl.textContent = label;
-          return;
-        }
-        gsap
-          .timeline()
-          .to(statusEl, { opacity: 0, y: -6, duration: 0.16, ease: 'power1.in' })
-          .add(() => {
-            statusEl.textContent = label;
-          })
-          .to(statusEl, { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' });
-      };
-
-      // Core outline that draws itself in sync with the boot counter.
-      const bootDraw = gsap.utils.toArray<SVGElement>('.boot-draw');
-      gsap.set(bootDraw, { drawSVG: prefersReduced ? '0% 100%' : '0% 0%' });
-
-      const counter = { v: 0 };
-      const render = () => {
-        if (percentEl) percentEl.textContent = String(Math.round(counter.v)).padStart(3, '0');
-        if (barEl) barEl.style.transform = `scaleX(${counter.v / 100})`;
-        if (!prefersReduced && bootDraw.length) {
-          gsap.set(bootDraw, { drawSVG: `0% ${counter.v}%` });
-        }
-      };
-
-      const boot = gsap.timeline({ onComplete: finishLoading });
-      if (prefersReduced) {
-        setStatus(STEPS.length - 1);
-        boot.to(counter, { v: 100, duration: 0.5, onUpdate: render });
-      } else {
-        STEPS.forEach((step, i) => {
-          boot.call(() => setStatus(i));
-          boot.to(counter, {
-            v: step.to,
-            duration: step.dur,
-            ease: 'power2.out',
-            onUpdate: render,
-          });
-          if (i < STEPS.length - 1) boot.to({}, { duration: 0.13 }); // brief settle between stages
-        });
-      }
-
-      function finishLoading() {
-        const loader = document.getElementById('loader');
-        const tl = gsap.timeline();
-        if (loader) {
-          tl.to(loader, {
-            opacity: 0,
-            scale: prefersReduced ? 1 : 1.04,
-            duration: prefersReduced ? 0.2 : 0.7,
-            ease: 'power2.inOut',
-          }).set(loader, { display: 'none' });
-        }
-        tl.add(heroEntrance(), prefersReduced ? '>' : '-=0.3');
-      }
-
-      function heroEntrance() {
-        const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-
-        if (prefersReduced) {
-          gsap.set(['header [data-head]', '[data-hero]', '.system-tag'], { opacity: 1, y: 0 });
-          gsap.set('.word-inner', { yPercent: 0 });
-          return tl;
-        }
-
+        const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.15 });
         tl.to('header [data-head]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 })
-          .to('[data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.45')
-          .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.07 }, '-=0.35')
-          .to('[data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7 }, '-=0.6')
-          .to('[data-hero="systemline"]', { opacity: 1, y: 0, duration: 0.5 }, '-=0.5')
-          .to(
-            '.system-tag',
-            { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.055 },
-            '-=0.35',
-          )
-          .to('[data-hero="contact"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.25');
-
-        return tl;
-      }
-
-      /* --- Capability tags ↔ core cluster + readout --- */
-      const readout = document.getElementById('tag-readout');
-      const defaultReadout = readout?.textContent ?? '';
-      const tagEls = Array.from(document.querySelectorAll<HTMLElement>('.system-tag'));
-
-      const focusTag = (i: number, desc: string | null) => {
-        core?.highlight(i);
-        if (readout && desc) {
-          readout.textContent = desc;
-          readout.classList.replace('text-white/45', 'text-white/70');
-        }
-      };
-      const clearTag = () => {
-        core?.highlight(null);
-        if (readout) {
-          readout.textContent = defaultReadout;
-          readout.classList.replace('text-white/70', 'text-white/45');
-        }
-      };
-
-      tagEls.forEach((el) => {
-        const i = Number(el.dataset.tagIndex);
-        const desc = el.getAttribute('data-desc');
-        el.addEventListener('pointerenter', () => focusTag(i, desc));
-        el.addEventListener('pointerleave', clearTag);
-        // Touch: tap to inspect.
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          focusTag(i, desc);
-        });
-      });
-      document.addEventListener('click', (e) => {
-        if (!(e.target as HTMLElement)?.closest('.system-tag')) clearTag();
-      });
-
-      /* --- Magnetic hover (desktop pointer only) --- */
-      const hoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-      if (hoverFine && !prefersReduced) {
-        document.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
-          const xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
-          const yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
-          el.addEventListener('pointermove', (e) => {
-            const r = el.getBoundingClientRect();
-            xTo((e.clientX - (r.left + r.width / 2)) * 0.3);
-            yTo((e.clientY - (r.top + r.height / 2)) * 0.3);
-          });
-          el.addEventListener('pointerleave', () => {
-            xTo(0);
-            yTo(0);
-          });
-        });
-      }
-
-      /* --- Channel-open state after contact reveal --- */
-      window.addEventListener(
-        'ongki:channel-open',
-        () => {
-          const status = document.getElementById('sys-status');
-          status?.replaceChildren('Channel Open');
-          status?.classList.replace('text-white/60', 'text-accent-bright');
-          document.getElementById('sys-dot')?.classList.add('channel-open');
-        },
-        { once: true },
-      );
-
-      /* --- Cleanup: cancel RAF + dispose GPU resources --- */
-      window.addEventListener('pagehide', () => core?.dispose(), { once: true });
-    </script>
-
-    <!-- Content guard (production only) — deterrence, not real protection.
-         Blocks right-click, drag, long-press menu, and common view-source/devtools keys. -->
-    <script>
-      if (import.meta.env.PROD) {
-        document.documentElement.classList.add('locked');
-        const stop = (e: Event) => e.preventDefault();
-        document.addEventListener('contextmenu', stop);
-        document.addEventListener('dragstart', stop);
-        document.addEventListener('keydown', (e: KeyboardEvent) => {
-          const k = e.key.toLowerCase();
-          const devtools =
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) ||
-            (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) || // macOS
-            (e.ctrlKey && (k === 'u' || k === 's')); // view-source / save
-          if (devtools) e.preventDefault();
-        });
+          .to('[data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+          .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.09 }, '-=0.3')
+          .to('[data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, '-=0.7')
+          .to('[data-hero="blueprint"]', { opacity: 1, y: 0, duration: 0.8 }, '-=1.1')
+          .to('[data-link]', { drawSVG: '100%', duration: 0.9, stagger: 0.12, ease: 'power2.inOut' }, '-=0.6')
+          .to('[data-node]', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, ease: 'back.out(1.7)' }, '-=1')
+          .add(() => document.querySelectorAll('[data-link]').forEach((p) => p.classList.add('flow', 'live')), '-=0.2')
+          .add(() => document.querySelectorAll('[data-node]').forEach((n) => n.classList.add('live')));
       }
     </script>
   </body>
