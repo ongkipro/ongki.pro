@@ -219,7 +219,7 @@ html.locked #contact-email {
 @media (min-width: 768px) { .story-section { padding: clamp(6rem, 14vh, 10rem) 2.5rem; } }
 
 /* ambient constellation canvas (fills space; phase-tinted) */
-.bg-net { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.55; }
+.bg-net { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.7; }
 
 /* headline: each word on its own line (consistent desktop & mobile) */
 .display .word { display: block; }

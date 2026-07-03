@@ -571,12 +571,13 @@ const work = [
         document.addEventListener('pointerup', () => gsap.to(ring, { scale: 1, duration: 0.22 }));
       }
 
-      /* --- ambient constellation (fills space; tinted by phase) --- */
+      /* --- ambient constellation (drifting + twinkle + mouse parallax; tinted by phase) --- */
       const cvs = document.getElementById('constellation') as HTMLCanvasElement | null;
       const ctx2 = cvs?.getContext('2d');
       if (cvs && ctx2) {
-        let W = 0, H = 0, DPR = 1, MAX = 128, accent = '#5d7bff';
-        let pts: { x: number; y: number; vx: number; vy: number }[] = [];
+        let W = 0, H = 0, DPR = 1, MAX = 132, accent = '#5d7bff';
+        let pts: { x: number; y: number; vx: number; vy: number; ph: number }[] = [];
+        let t = 0, px = 0, py = 0, mx = 0, my = 0;
         const readAccent = () => {
           accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#5d7bff';
         };
@@ -586,43 +587,53 @@ const work = [
           H = cvs.height = Math.floor(window.innerHeight * DPR);
           cvs.style.width = window.innerWidth + 'px';
           cvs.style.height = window.innerHeight + 'px';
-          MAX = 128 * DPR;
-          const n = Math.max(16, Math.min(58, Math.round((window.innerWidth * window.innerHeight) / 27000)));
+          MAX = 132 * DPR;
+          const n = Math.max(18, Math.min(64, Math.round((window.innerWidth * window.innerHeight) / 24000)));
           pts = Array.from({ length: n }, () => ({
             x: Math.random() * W, y: Math.random() * H,
-            vx: (Math.random() - 0.5) * 0.12 * DPR, vy: (Math.random() - 0.5) * 0.12 * DPR,
+            vx: (Math.random() - 0.5) * 0.22 * DPR, vy: (Math.random() - 0.5) * 0.22 * DPR,
+            ph: Math.random() * 6.283,
           }));
         };
-        const render = (move: boolean) => {
+        const render = (dt: number, move: boolean) => {
+          t += dt;
+          px += (mx * 26 * DPR - px) * 0.05;
+          py += (my * 26 * DPR - py) * 0.05;
           ctx2.clearRect(0, 0, W, H);
+          ctx2.save();
+          ctx2.translate(px, py);
           for (const p of pts) {
-            if (move) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }
+            if (move) { p.x += p.vx; p.y += p.vy; if (p.x < -30 || p.x > W + 30) p.vx *= -1; if (p.y < -30 || p.y > H + 30) p.vy *= -1; }
           }
           for (let i = 0; i < pts.length; i++) {
             const a = pts[i];
-            ctx2.globalAlpha = 0.45; ctx2.fillStyle = accent;
-            ctx2.beginPath(); ctx2.arc(a.x, a.y, 1.1 * DPR, 0, 6.283); ctx2.fill();
+            const tw = 0.5 + 0.5 * Math.sin(t * 0.0018 + a.ph);
+            ctx2.globalAlpha = 0.35 + 0.45 * tw;
+            ctx2.fillStyle = accent;
+            ctx2.beginPath(); ctx2.arc(a.x, a.y, (1 + 0.5 * tw) * DPR, 0, 6.283); ctx2.fill();
             for (let j = i + 1; j < pts.length; j++) {
               const b = pts[j]; const dx = a.x - b.x, dy = a.y - b.y; const d = Math.sqrt(dx * dx + dy * dy);
               if (d < MAX) {
-                ctx2.globalAlpha = (1 - d / MAX) * 0.14; ctx2.strokeStyle = accent; ctx2.lineWidth = 1;
+                ctx2.globalAlpha = (1 - d / MAX) * 0.2; ctx2.strokeStyle = accent; ctx2.lineWidth = 1;
                 ctx2.beginPath(); ctx2.moveTo(a.x, a.y); ctx2.lineTo(b.x, b.y); ctx2.stroke();
               }
             }
           }
+          ctx2.restore();
           ctx2.globalAlpha = 1;
         };
         readAccent(); resize();
         let rt = 0;
         window.addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(resize, 200); });
         setInterval(readAccent, 4000);
+        if (fine) window.addEventListener('pointermove', (e) => { mx = e.clientX / window.innerWidth - 0.5; my = e.clientY / window.innerHeight - 0.5; }, { passive: true });
         if (reduce) {
-          render(false);
+          render(0, false);
         } else {
-          let raf = 0;
-          const loop = () => { render(true); raf = requestAnimationFrame(loop); };
-          loop();
-          document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) loop(); });
+          let raf = 0, last = performance.now();
+          const loop = (now: number) => { const dt = Math.min(50, now - last); last = now; render(dt, true); raf = requestAnimationFrame(loop); };
+          raf = requestAnimationFrame(loop);
+          document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) { last = performance.now(); loop(performance.now()); } });
           window.addEventListener('pagehide', () => cancelAnimationFrame(raf), { once: true });
         }
       }
