@@ -220,3 +220,37 @@ html.locked #contact-email {
 
 /* headline: each word on its own line (consistent desktop & mobile) */
 .display .word { display: block; }
+
+/* ------------------------------------------------------------------ */
+/*  Custom cursor (desktop fine-pointer only; native stays as fallback)*/
+/* ------------------------------------------------------------------ */
+.cursor-el {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  border-radius: 9999px;
+  translate: -50% -50%;
+  will-change: transform;
+  opacity: 0;
+}
+.cursor-dot { width: 6px; height: 6px; background: var(--color-accent-bright); }
+.cursor-ring {
+  width: 34px; height: 34px;
+  border: 1px solid rgb(93 123 255 / 0.7);
+  transition: width 0.28s cubic-bezier(0.2,0.8,0.2,1), height 0.28s cubic-bezier(0.2,0.8,0.2,1),
+              background-color 0.28s, border-color 0.28s;
+}
+/* grow + fill faintly over interactive targets */
+.cursor-ring.is-hot {
+  width: 58px; height: 58px;
+  border-color: rgb(93 123 255 / 0.9);
+  background: rgb(93 123 255 / 0.08);
+}
+.cursor-dot.is-hot { opacity: 0 !important; }
+
+/* hide native cursor only once JS has mounted the custom one */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor .cap { cursor: none; }
+}

@@ -331,6 +331,37 @@ const work = [
         });
       }
 
+      /* --- custom cursor (desktop fine-pointer only) --- */
+      if (fine && !reduce) {
+        const dot = document.createElement('div');
+        dot.className = 'cursor-el cursor-dot';
+        const ring = document.createElement('div');
+        ring.className = 'cursor-el cursor-ring';
+        document.body.append(dot, ring);
+        document.documentElement.classList.add('has-cursor');
+
+        const dx = gsap.quickTo(dot, 'x', { duration: 0.11, ease: 'power3' });
+        const dy = gsap.quickTo(dot, 'y', { duration: 0.11, ease: 'power3' });
+        const rx = gsap.quickTo(ring, 'x', { duration: 0.42, ease: 'power3' });
+        const ry = gsap.quickTo(ring, 'y', { duration: 0.42, ease: 'power3' });
+
+        window.addEventListener('pointermove', (e) => {
+          dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
+          gsap.to([dot, ring], { opacity: 1, duration: 0.3, overwrite: 'auto' });
+        }, { passive: true });
+        document.addEventListener('pointerleave', () => gsap.to([dot, ring], { opacity: 0, duration: 0.3 }));
+
+        const hot = 'a, button, .cap, .group, [data-node], input, textarea, [role="button"]';
+        const enter = () => { ring.classList.add('is-hot'); dot.classList.add('is-hot'); };
+        const leave = () => { ring.classList.remove('is-hot'); dot.classList.remove('is-hot'); };
+        document.querySelectorAll(hot).forEach((el) => {
+          el.addEventListener('pointerenter', enter);
+          el.addEventListener('pointerleave', leave);
+        });
+        document.addEventListener('pointerdown', () => gsap.to(ring, { scale: 0.8, duration: 0.14 }));
+        document.addEventListener('pointerup', () => gsap.to(ring, { scale: 1, duration: 0.22 }));
+      }
+
       /* --- channel-open state after contact reveal --- */
       window.addEventListener('ongki:channel-open', () => {
         const status = document.getElementById('sys-status');
