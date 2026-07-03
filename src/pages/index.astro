@@ -4,6 +4,8 @@ import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
+import ContactReveal from '../components/ContactReveal.astro';
+import { Globe, ShoppingBag, Search, Megaphone, Workflow, Bot } from '@lucide/astro';
 
 const site = 'https://ongki.pro';
 const title = 'ongki.pro — Building Digital Growth Systems';
@@ -11,10 +13,9 @@ const description =
   'A digital growth systems builder. Websites, commerce, SEO, paid media, and AI automation — engineered as one operating layer that compounds.';
 const ogImage = `${site}/og.png`;
 
-// Hero headline split for per-word kinetic reveal.
 const headline = [{ text: 'Digital' }, { text: 'Growth', accent: true }, { text: 'Systems.' }];
 
-// The operating layer — 6 capabilities feeding one growth engine.
+// Blueprint nodes (hero signature)
 const nodes = [
   { id: 'site', label: 'SITE', x: 70, y: 70 },
   { id: 'shop', label: 'SHOP', x: 70, y: 290 },
@@ -34,6 +35,33 @@ const path = (a: string, b: string) => {
   const mx = (p.x + q.x) / 2;
   return `M ${p.x} ${p.y} C ${mx} ${p.y}, ${mx} ${q.y}, ${q.x} ${q.y}`;
 };
+
+// 02 · capabilities
+const capabilities = [
+  { icon: Globe, label: 'Website Development', desc: 'High-performance sites engineered for speed, SEO, and conversion.' },
+  { icon: ShoppingBag, label: 'Shopify Commerce', desc: 'Scalable storefronts and custom commerce architecture — headless when it counts.' },
+  { icon: Search, label: 'SEO Infrastructure', desc: 'Technical foundations and content systems that compound organic growth.' },
+  { icon: Megaphone, label: 'Meta & Google Ads', desc: 'Data-driven paid media with tracking built to scale profitably.' },
+  { icon: Workflow, label: 'AI Automation', desc: 'Workflows that remove manual work from operations and marketing.' },
+  { icon: Bot, label: 'AI Agents', desc: 'Autonomous systems that execute, assist, and run on their own.' },
+];
+
+// 03 · principles
+const principles = [
+  { n: 'A', t: 'Systems, not deliverables.', d: 'I build reusable systems and assets — not one-off projects that stall the moment they ship.' },
+  { n: 'B', t: 'Automation-first.', d: 'Every workflow is designed to run without me — operated by a team, an intern, or an AI agent.' },
+  { n: 'C', t: 'Compounding by design.', d: 'SEO, content, and infrastructure that gain value over time, instead of campaigns that reset to zero.' },
+];
+
+// 04 · selected work (real, in production)
+const work = [
+  { name: 'Pixs&Go', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Toys & hobbies storefront (Play & Go).', url: 'pixsgo.com' },
+  { name: 'PetCue', cat: 'Ecommerce', stack: 'Astro · Shopify', desc: 'Pet-care storefront + automated blog engine.', url: 'petcue.co' },
+  { name: 'Dealer Hino', cat: 'Corporate', stack: 'Astro · Cloudflare', desc: 'Official dealer site — 251 pages, edge-deployed.', url: 'dealerhinoofficial.com' },
+  { name: 'RTQ Al-Hadi', cat: 'Institution', stack: 'Astro · Vercel', desc: 'Tahfidz institute — multi-page, live.', url: 'rtqalhadi.com' },
+  { name: 'Heimwerk-Guide', cat: 'Affiliate SEO', stack: 'Astro SSR · Cloudflare', desc: 'German Amazon affiliate engine (D1/KV).', url: 'fitsst.com' },
+  { name: 'Indostore', cat: 'SaaS', stack: 'Next.js · Astro · Postgres', desc: 'Shopify-style commerce platform for Indonesia.', url: '' },
+];
 ---
 
 <!doctype html>
@@ -62,36 +90,37 @@ const path = (a: string, b: string) => {
     <div class="bg-vignette" aria-hidden="true"></div>
     <div class="bg-noise" aria-hidden="true"></div>
 
+    <!-- scroll progress rail -->
+    <div class="progress-rail" aria-hidden="true"><span id="progress-fill"></span></div>
+
     <header class="fixed inset-x-0 top-0 z-50">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
         <a data-head href="/" class="font-mono text-sm tracking-[0.22em] text-white/90">
           ongki<span class="text-accent">.pro</span>
         </a>
         <div data-head class="eyebrow">
-          <span class="relative flex size-1.5">
-            <span class="bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
+          <span id="sys-dot" class="relative flex size-1.5">
+            <span class="ping bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
             <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
           </span>
-          System Online
+          <span id="sys-status">System Online</span>
         </div>
       </div>
     </header>
 
     <main>
       <!-- 01 · HERO -->
-      <section class="relative z-10 flex min-h-[100svh] items-center">
+      <section id="hero" class="relative z-10 flex min-h-[100svh] items-center">
         <div class="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 md:px-10 lg:grid-cols-[1.05fr_0.95fr]">
-          <!-- copy -->
           <div class="text-center lg:text-left">
             <p data-hero="eyebrow" class="eyebrow justify-center lg:justify-start">
               <span class="tick"></span> <b>01</b> · Digital Growth OS
             </p>
-
             <h1 class="display mt-6 text-[clamp(2.5rem,9vw,5.5rem)] text-white">
-              <span class="block word"><span class="word-inner text-white/60">Building</span></span>
+              <span class="word"><span class="word-inner text-white/55">Building</span></span>
               {
                 headline.map((w) => (
-                  <span class="block word">
+                  <span class="word">
                     <span
                       class:list={[
                         'word-inner',
@@ -104,28 +133,23 @@ const path = (a: string, b: string) => {
                 ))
               }
             </h1>
-
             <p data-hero="sub" class="mx-auto mt-7 max-w-md text-[15px] leading-relaxed text-white/55 md:text-lg lg:mx-0">
               Websites, commerce, SEO, paid media, and AI automation — engineered as
               <span class="text-white/80">one operating layer</span> that compounds.
             </p>
-
             <p data-hero="sub" class="mt-8 flex items-center justify-center gap-2 font-mono text-[10.5px] tracking-[0.2em] text-white/40 uppercase lg:justify-start">
               <span class="tick"></span> Independent systems builder · Indonesia
             </p>
           </div>
 
-          <!-- signature: animated System Blueprint -->
           <div data-hero="blueprint" class="relative mx-auto w-full max-w-[520px]">
             <svg class="blueprint" viewBox="0 0 520 360" role="img" aria-label="Digital growth system diagram">
               <g stroke-linecap="round">
-                {links.map(([a, b]) => (
-                  <path class="bp-path" data-link d={path(a, b)} />
-                ))}
+                {links.map(([a, b]) => <path class="bp-path" data-link d={path(a, b)} />)}
               </g>
               {
                 nodes.map((n) => (
-                  <g class={`bp-node ${n.hub ? 'is-hub' : ''}`} data-node transform={`translate(${n.x} ${n.y})`}>
+                  <g class="bp-node" data-node transform={`translate(${n.x} ${n.y})`}>
                     <circle r={n.hub ? 26 : 15} />
                     {n.hub && <circle class="bp-hub-ring" r="34" fill="none" stroke="var(--color-accent)" stroke-opacity="0.35" stroke-dasharray="2 5" />}
                     <text text-anchor="middle" dy={n.hub ? 3 : -24}>{n.label}</text>
@@ -135,13 +159,99 @@ const path = (a: string, b: string) => {
             </svg>
           </div>
         </div>
-
-        <!-- scroll cue -->
         <div data-hero="sub" class="absolute inset-x-0 bottom-7 flex justify-center">
-          <div class="eyebrow flex-col gap-1.5">
-            <span>Scroll</span>
-            <span class="scroll-cue"></span>
+          <div class="eyebrow flex-col gap-1.5"><span>Scroll</span><span class="scroll-cue"></span></div>
+        </div>
+      </section>
+
+      <!-- 02 · THE SYSTEM -->
+      <section class="story-section">
+        <p data-reveal class="eyebrow"><span class="tick"></span> <b>02</b> · The Operating Layer</p>
+        <h2 data-reveal class="display mt-6 max-w-3xl text-[clamp(1.9rem,5.5vw,3.4rem)] text-white">
+          Six capabilities.<br /><span class="text-white/45">One system.</span>
+        </h2>
+        <p data-reveal class="mt-5 max-w-xl text-white/50">
+          Most people buy these one at a time. I run them as a single stack — where each part feeds the next.
+        </p>
+        <div class="mt-14 grid gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02] sm:grid-cols-2 lg:grid-cols-3">
+          {
+            capabilities.map((c, i) => (
+              <div data-reveal class="cap group relative bg-bg/40 p-6 transition-colors duration-300 hover:bg-accent/[0.05]">
+                <div class="flex items-center justify-between">
+                  <c.icon class="text-accent size-5 transition-transform duration-300 group-hover:-translate-y-0.5" stroke-width={1.6} />
+                  <span class="font-mono text-[11px] tracking-[0.2em] text-white/25">0{i + 1}</span>
+                </div>
+                <h3 class="font-display mt-5 text-lg font-semibold tracking-tight text-white">{c.label}</h3>
+                <p class="mt-2 text-[13.5px] leading-relaxed text-white/50">{c.desc}</p>
+                <span class="cap-line absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-accent to-transparent transition-[width] duration-500 group-hover:w-full"></span>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- 03 · HOW IT COMPOUNDS -->
+      <section class="story-section">
+        <p data-reveal class="eyebrow"><span class="tick"></span> <b>03</b> · The Compounding Effect</p>
+        <h2 data-reveal class="display mt-6 max-w-3xl text-[clamp(1.9rem,5.5vw,3.4rem)] text-white">
+          I don't sell projects.<br /><span class="from-accent-bright via-accent to-accent-bright bg-gradient-to-br bg-clip-text text-transparent">I build assets.</span>
+        </h2>
+        <div class="mt-14 flex flex-col gap-px overflow-hidden rounded-2xl border border-white/8">
+          {
+            principles.map((p) => (
+              <div data-reveal class="grid items-baseline gap-4 bg-white/[0.02] p-7 md:grid-cols-[auto_1fr] md:p-9">
+                <span class="font-mono text-sm text-accent/70">{p.n}</span>
+                <div>
+                  <h3 class="font-display text-[clamp(1.3rem,3.5vw,2rem)] font-semibold tracking-tight text-white">{p.t}</h3>
+                  <p class="mt-2 max-w-2xl text-[15px] leading-relaxed text-white/50">{p.d}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- 04 · PROOF -->
+      <section class="story-section">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p data-reveal class="eyebrow"><span class="tick"></span> <b>04</b> · Selected Work</p>
+            <h2 data-reveal class="display mt-6 text-[clamp(1.9rem,5.5vw,3.4rem)] text-white">Systems in production.</h2>
           </div>
+          <p data-reveal class="font-mono text-[11px] tracking-[0.2em] text-white/35 uppercase">{work.length} of many · 2025–2026</p>
+        </div>
+        <div class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/8 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            work.map((w) => (
+              <div data-reveal class="group relative flex flex-col bg-white/[0.02] p-6 transition-colors duration-300 hover:bg-white/[0.04]">
+                <div class="flex items-center justify-between font-mono text-[10.5px] tracking-[0.18em] uppercase">
+                  <span class="text-accent/80">{w.cat}</span>
+                  {w.url && <span class="text-white/25 transition-colors group-hover:text-white/50">{w.url}</span>}
+                </div>
+                <h3 class="font-display mt-6 text-2xl font-semibold tracking-tight text-white">{w.name}</h3>
+                <p class="mt-2 text-[13.5px] leading-relaxed text-white/50">{w.desc}</p>
+                <span class="mt-5 font-mono text-[11px] tracking-wide text-white/35">{w.stack}</span>
+                <span class="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-accent to-transparent transition-[width] duration-500 group-hover:w-full"></span>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- 05 · CONTACT -->
+      <section class="story-section pb-28">
+        <p data-reveal class="eyebrow"><span class="tick"></span> <b>05</b> · Open a Channel</p>
+        <h2 data-reveal class="display mt-6 max-w-3xl text-[clamp(2rem,7vw,4rem)] text-white">
+          Let's build<br />your <span class="from-accent-bright via-accent to-accent-bright bg-gradient-to-br bg-clip-text text-transparent">system.</span>
+        </h2>
+        <p data-reveal class="mt-6 max-w-lg text-white/50">
+          Selective on projects — a few, done as real infrastructure. If that's the kind of work you need, reach out.
+        </p>
+        <div data-reveal class="mt-10 max-w-xl"><ContactReveal /></div>
+
+        <div class="mt-24 flex flex-wrap items-center justify-between gap-4 border-t border-white/8 pt-8 font-mono text-[11px] tracking-[0.14em] text-white/30 uppercase">
+          <span>© 2026 ongki.pro</span>
+          <span>Building Digital Growth Systems</span>
         </div>
       </section>
     </main>
@@ -152,34 +262,90 @@ const path = (a: string, b: string) => {
       @keyframes cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
       .bp-hub-ring { animation: spin 18s linear infinite; transform-origin: center; }
       @keyframes spin { to { transform: rotate(360deg); } }
+      .progress-rail { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; background: transparent; }
+      .progress-rail span { display: block; height: 100%; width: 0; background: linear-gradient(to right, var(--color-accent), var(--color-accent-bright)); box-shadow: 0 0 8px var(--color-accent); }
     </style>
 
     <script>
       import gsap from 'gsap';
       import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-      gsap.registerPlugin(DrawSVGPlugin);
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (!reduce) {
+      /* --- scroll progress rail --- */
+      gsap.to('#progress-fill', {
+        width: '100%',
+        ease: 'none',
+        scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 },
+      });
+
+      if (reduce) {
+        gsap.set(['header [data-head]', '#hero [data-hero]', '[data-reveal]'], { opacity: 1, y: 0 });
+        gsap.set('.word-inner', { yPercent: 0 });
+        gsap.set('[data-link]', { drawSVG: '100%' });
+        gsap.set('[data-node]', { opacity: 1, scale: 1 });
+      } else {
         gsap.to('#bg-glow', { xPercent: -7, yPercent: 5, duration: 16, repeat: -1, yoyo: true, ease: 'sine.inOut' });
 
+        /* hero entrance (scoped to #hero) */
         gsap.set('header [data-head]', { opacity: 0, y: -12 });
-        gsap.set('[data-hero]', { opacity: 0, y: 18 });
+        gsap.set('#hero [data-hero]', { opacity: 0, y: 18 });
         gsap.set('.word-inner', { yPercent: 115 });
         gsap.set('[data-link]', { drawSVG: '0%' });
         gsap.set('[data-node]', { opacity: 0, scale: 0.6, transformOrigin: 'center' });
 
         const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.15 });
         tl.to('header [data-head]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 })
-          .to('[data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+          .to('#hero [data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
           .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.09 }, '-=0.3')
-          .to('[data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, '-=0.7')
+          .to('#hero [data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, '-=0.7')
           .to('[data-hero="blueprint"]', { opacity: 1, y: 0, duration: 0.8 }, '-=1.1')
           .to('[data-link]', { drawSVG: '100%', duration: 0.9, stagger: 0.12, ease: 'power2.inOut' }, '-=0.6')
           .to('[data-node]', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, ease: 'back.out(1.7)' }, '-=1')
           .add(() => document.querySelectorAll('[data-link]').forEach((p) => p.classList.add('flow', 'live')), '-=0.2')
           .add(() => document.querySelectorAll('[data-node]').forEach((n) => n.classList.add('live')));
+
+        /* scroll reveals for sections 02–05 */
+        gsap.set('[data-reveal]', { opacity: 0, y: 26 });
+        ScrollTrigger.batch('[data-reveal]', {
+          start: 'top 86%',
+          onEnter: (els) =>
+            gsap.to(els, { opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'expo.out', overwrite: true }),
+        });
+      }
+
+      /* --- magnetic hover (desktop pointer only) --- */
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (fine && !reduce) {
+        document.querySelectorAll<HTMLElement>('.magnetic').forEach((el) => {
+          const xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
+          const yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            xTo((e.clientX - (r.left + r.width / 2)) * 0.3);
+            yTo((e.clientY - (r.top + r.height / 2)) * 0.3);
+          });
+          el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+        });
+      }
+
+      /* --- channel-open state after contact reveal --- */
+      window.addEventListener('ongki:channel-open', () => {
+        const status = document.getElementById('sys-status');
+        status?.replaceChildren('Channel Open');
+        status?.classList.add('text-accent-bright');
+        document.getElementById('sys-dot')?.classList.add('channel-open');
+      }, { once: true });
+    </script>
+
+    <script>
+      if (import.meta.env.PROD) {
+        document.documentElement.classList.add('locked');
+        const stop = (e: Event) => e.preventDefault();
+        document.addEventListener('contextmenu', stop);
+        document.addEventListener('dragstart', stop);
       }
     </script>
   </body>
