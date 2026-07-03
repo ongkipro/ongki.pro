@@ -5,8 +5,10 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import ContactReveal from '../components/ContactReveal.astro';
-import { Globe, ShoppingBag, Search, Megaphone, Workflow, Bot } from '@lucide/astro';
+import { Globe, ShoppingBag, Search, Megaphone, Workflow, Bot, ArrowUpRight } from '@lucide/astro';
 
+const GH_PATH =
+  'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z';
 const site = 'https://ongki.pro';
 const title = 'ongki.pro — Building Digital Growth Systems';
 const description =
@@ -140,6 +142,10 @@ const work = [
   </head>
 
   <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16"><path d={GH_PATH} /></symbol>
+    </svg>
+
     <!-- Boot loader: celestial (sun/moon at its real WIB position) + tech -->
     <div id="loader">
       <div class="loader-inner">
@@ -167,6 +173,7 @@ const work = [
 
     <div class="bg-grid" aria-hidden="true"></div>
     <div id="bg-glow" class="bg-glow" aria-hidden="true"></div>
+    <canvas id="constellation" class="bg-net" aria-hidden="true"></canvas>
     <div class="bg-vignette" aria-hidden="true"></div>
     <div class="bg-noise" aria-hidden="true"></div>
 
@@ -178,12 +185,24 @@ const work = [
         <a data-head href="/" class="font-mono text-sm tracking-[0.22em] text-white/90">
           ongki<span class="text-accent">.pro</span>
         </a>
-        <div data-head class="eyebrow">
-          <span id="sys-dot" class="relative flex size-1.5">
-            <span class="ping bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
-            <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
-          </span>
-          <span id="sys-status">System Online</span>
+        <div class="flex items-center gap-4 md:gap-5">
+          <div data-head class="eyebrow hidden sm:flex">
+            <span id="sys-dot" class="relative flex size-1.5">
+              <span class="ping bg-accent/60 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
+              <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
+            </span>
+            <span id="sys-status">System Online</span>
+          </div>
+          <a
+            data-head
+            href="https://github.com/ongkipro"
+            target="_blank"
+            rel="noopener"
+            aria-label="GitHub — ongkipro"
+            class="magnetic text-white/55 transition-colors hover:text-accent"
+          >
+            <svg class="size-[18px]" fill="currentColor" aria-hidden="true"><use href="#gh-mark" /></svg>
+          </a>
         </div>
       </div>
     </header>
@@ -333,9 +352,29 @@ const work = [
         </p>
         <div data-reveal class="mt-10 max-w-xl"><ContactReveal /></div>
 
-        <div class="mt-24 flex flex-wrap items-center justify-between gap-4 border-t border-white/8 pt-8 font-mono text-[11px] tracking-[0.14em] text-white/30 uppercase">
-          <span>© 2026 ongki.pro</span>
-          <span>Building Digital Growth Systems</span>
+        <div data-reveal class="mt-8 flex items-center gap-5 font-mono text-[11px] tracking-[0.2em] uppercase">
+          <span class="text-white/30">Elsewhere</span>
+          <a
+            href="https://github.com/ongkipro"
+            target="_blank"
+            rel="noopener"
+            class="magnetic group inline-flex items-center gap-2 text-white/55 transition-colors hover:text-accent"
+          >
+            <svg class="size-3.5" fill="currentColor" aria-hidden="true"><use href="#gh-mark" /></svg> ongkipro
+            <ArrowUpRight class="size-3 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+          </a>
+        </div>
+
+        <div class="mt-24 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/8 pt-8 font-mono text-[11px] tracking-[0.14em] text-white/30 uppercase">
+          <span>© 2026 ongki.pro · Building Digital Growth Systems</span>
+          <a
+            href="https://github.com/ongkipro"
+            target="_blank"
+            rel="noopener"
+            class="magnetic inline-flex items-center gap-2 text-white/45 transition-colors hover:text-accent"
+          >
+            <svg class="size-3.5" fill="currentColor" aria-hidden="true"><use href="#gh-mark" /></svg> github.com/ongkipro
+          </a>
         </div>
       </section>
     </main>
@@ -530,6 +569,62 @@ const work = [
         });
         document.addEventListener('pointerdown', () => gsap.to(ring, { scale: 0.8, duration: 0.14 }));
         document.addEventListener('pointerup', () => gsap.to(ring, { scale: 1, duration: 0.22 }));
+      }
+
+      /* --- ambient constellation (fills space; tinted by phase) --- */
+      const cvs = document.getElementById('constellation') as HTMLCanvasElement | null;
+      const ctx2 = cvs?.getContext('2d');
+      if (cvs && ctx2) {
+        let W = 0, H = 0, DPR = 1, MAX = 128, accent = '#5d7bff';
+        let pts: { x: number; y: number; vx: number; vy: number }[] = [];
+        const readAccent = () => {
+          accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#5d7bff';
+        };
+        const resize = () => {
+          DPR = Math.min(2, window.devicePixelRatio || 1);
+          W = cvs.width = Math.floor(window.innerWidth * DPR);
+          H = cvs.height = Math.floor(window.innerHeight * DPR);
+          cvs.style.width = window.innerWidth + 'px';
+          cvs.style.height = window.innerHeight + 'px';
+          MAX = 128 * DPR;
+          const n = Math.max(16, Math.min(58, Math.round((window.innerWidth * window.innerHeight) / 27000)));
+          pts = Array.from({ length: n }, () => ({
+            x: Math.random() * W, y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.12 * DPR, vy: (Math.random() - 0.5) * 0.12 * DPR,
+          }));
+        };
+        const render = (move: boolean) => {
+          ctx2.clearRect(0, 0, W, H);
+          for (const p of pts) {
+            if (move) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }
+          }
+          for (let i = 0; i < pts.length; i++) {
+            const a = pts[i];
+            ctx2.globalAlpha = 0.45; ctx2.fillStyle = accent;
+            ctx2.beginPath(); ctx2.arc(a.x, a.y, 1.1 * DPR, 0, 6.283); ctx2.fill();
+            for (let j = i + 1; j < pts.length; j++) {
+              const b = pts[j]; const dx = a.x - b.x, dy = a.y - b.y; const d = Math.sqrt(dx * dx + dy * dy);
+              if (d < MAX) {
+                ctx2.globalAlpha = (1 - d / MAX) * 0.14; ctx2.strokeStyle = accent; ctx2.lineWidth = 1;
+                ctx2.beginPath(); ctx2.moveTo(a.x, a.y); ctx2.lineTo(b.x, b.y); ctx2.stroke();
+              }
+            }
+          }
+          ctx2.globalAlpha = 1;
+        };
+        readAccent(); resize();
+        let rt = 0;
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(resize, 200); });
+        setInterval(readAccent, 4000);
+        if (reduce) {
+          render(false);
+        } else {
+          let raf = 0;
+          const loop = () => { render(true); raf = requestAnimationFrame(loop); };
+          loop();
+          document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) loop(); });
+          window.addEventListener('pagehide', () => cancelAnimationFrame(raf), { once: true });
+        }
       }
 
       /* --- channel-open state after contact reveal --- */
