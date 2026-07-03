@@ -82,9 +82,50 @@ const work = [
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={site} />
+
+    <!-- Set the time-of-day phase (WIB) before paint — no colour flash. -->
+    <script is:inline>
+      (function () {
+        try {
+          var forced = new URLSearchParams(location.search).get('phase');
+          var w = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+          var h = w.getHours() + w.getMinutes() / 60;
+          var ph = ['dawn', 'day', 'dusk', 'night'].indexOf(forced) >= 0 ? forced
+            : h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 16 ? 'day' : h >= 16 && h < 19 ? 'dusk' : 'night';
+          document.documentElement.setAttribute('data-phase', ph);
+        } catch (e) {
+          document.documentElement.setAttribute('data-phase', 'night');
+        }
+      })();
+    </script>
   </head>
 
   <body>
+    <!-- Boot loader: celestial (sun/moon at its real WIB position) + tech -->
+    <div id="loader">
+      <div class="loader-inner">
+        <svg class="celestial" viewBox="0 0 400 210" aria-hidden="true">
+          <line class="cel-horizon" x1="24" y1="190" x2="376" y2="190" />
+          <path class="cel-arc" d="M 40 190 A 160 160 0 0 1 360 190" />
+          <line class="cel-tick" x1="40" y1="186" x2="40" y2="194" />
+          <line class="cel-tick" x1="200" y1="26" x2="200" y2="34" />
+          <line class="cel-tick" x1="360" y1="186" x2="360" y2="194" />
+          <g id="cel-body-g">
+            <g id="cel-rays"></g>
+            <circle class="cel-body-ring" id="cel-ring" r="19" />
+            <circle class="cel-body" id="cel-disc" r="12" />
+            <circle id="cel-moon-mask" r="12" fill="var(--color-bg)" />
+          </g>
+        </svg>
+        <div class="loader-meta">
+          <div class="loader-percent"><span id="loader-percent">000</span></div>
+          <div class="loader-bar"><span id="loader-bar"></span></div>
+          <div class="loader-status" id="loader-status">Reading almanac</div>
+          <div class="loader-phase" id="loader-phase"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="bg-grid" aria-hidden="true"></div>
     <div id="bg-glow" class="bg-glow" aria-hidden="true"></div>
     <div class="bg-vignette" aria-hidden="true"></div>
@@ -281,38 +322,108 @@ const work = [
         scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 },
       });
 
-      if (reduce) {
-        gsap.set(['header [data-head]', '#hero [data-hero]', '[data-reveal]'], { opacity: 1, y: 0 });
-        gsap.set('.word-inner', { yPercent: 0 });
-        gsap.set('[data-link]', { drawSVG: '100%' });
-        gsap.set('[data-node]', { opacity: 1, scale: 1 });
-      } else {
-        gsap.to('#bg-glow', { xPercent: -7, yPercent: 5, duration: 16, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      /* --- time-of-day phase + celestial position (WIB) --- */
+      const forcedPhase = new URLSearchParams(location.search).get('phase');
+      const REP: Record<string, number> = { dawn: 6.3, day: 12, dusk: 17.6, night: 22 };
+      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+      const phase = document.documentElement.getAttribute('data-phase') || 'night';
+      const hWib = forcedPhase && REP[forcedPhase] != null ? REP[forcedPhase] : wib.getHours() + wib.getMinutes() / 60;
+      const LABELS: Record<string, string> = { dawn: 'SUBUH', day: 'SIANG', dusk: 'SENJA', night: 'MALAM' };
+      const isMoon = phase === 'night';
+      let pTarget: number;
+      if (isMoon) { const hh = hWib < 5 ? hWib + 24 : hWib; pTarget = (hh - 19) / (29 - 19); }
+      else { pTarget = (hWib - 5) / (19 - 5); }
+      pTarget = Math.max(0.05, Math.min(0.95, pTarget));
+      const arc = (t: number) => { const a = Math.PI - t * Math.PI; return { x: 200 + 160 * Math.cos(a), y: 190 - 160 * Math.sin(a) }; };
 
-        /* hero entrance (scoped to #hero) */
-        gsap.set('header [data-head]', { opacity: 0, y: -12 });
-        gsap.set('#hero [data-hero]', { opacity: 0, y: 18 });
-        gsap.set('.word-inner', { yPercent: 115 });
-        gsap.set('[data-link]', { drawSVG: '0%' });
-        gsap.set('[data-node]', { opacity: 0, scale: 0.6, transformOrigin: 'center' });
+      const bodyG = document.getElementById('cel-body-g');
+      const rays = document.getElementById('cel-rays');
+      const moonMask = document.getElementById('cel-moon-mask');
+      const percentEl = document.getElementById('loader-percent');
+      const barSpan = document.getElementById('loader-bar');
+      const statusEl = document.getElementById('loader-status');
+      const phaseEl = document.getElementById('loader-phase');
+      if (phaseEl) phaseEl.textContent = 'Phase · ' + LABELS[phase];
 
-        const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.15 });
-        tl.to('header [data-head]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 })
-          .to('#hero [data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
-          .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.09 }, '-=0.3')
-          .to('#hero [data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, '-=0.7')
-          .to('[data-hero="blueprint"]', { opacity: 1, y: 0, duration: 0.8 }, '-=1.1')
-          .to('[data-link]', { drawSVG: '100%', duration: 0.9, stagger: 0.12, ease: 'power2.inOut' }, '-=0.6')
-          .to('[data-node]', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, ease: 'back.out(1.7)' }, '-=1')
-          .add(() => document.querySelectorAll('[data-link]').forEach((p) => p.classList.add('flow', 'live')), '-=0.2')
-          .add(() => document.querySelectorAll('[data-node]').forEach((n) => n.classList.add('live')));
+      // Sun gets rays; moon gets a crescent (offset bg-coloured mask).
+      if (isMoon) { moonMask?.setAttribute('transform', 'translate(7 -4)'); }
+      else if (rays) {
+        moonMask?.remove();
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2;
+          const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          l.setAttribute('class', 'cel-ray');
+          l.setAttribute('x1', String((Math.cos(a) * 17).toFixed(1)));
+          l.setAttribute('y1', String((Math.sin(a) * 17).toFixed(1)));
+          l.setAttribute('x2', String((Math.cos(a) * 23).toFixed(1)));
+          l.setAttribute('y2', String((Math.sin(a) * 23).toFixed(1)));
+          rays.appendChild(l);
+        }
+      }
+      const placeBody = (t: number) => { const pt = arc(t); bodyG?.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`); };
+      placeBody(0.06);
 
-        /* scroll reveals for sections 02–05 */
-        gsap.set('[data-reveal]', { opacity: 0, y: 26 });
+      /* hero pre-hide + reveal pre-hide (loader covers, so no flash) */
+      gsap.set('header [data-head]', { opacity: 0, y: -12 });
+      gsap.set('#hero [data-hero]', { opacity: 0, y: 18 });
+      gsap.set('.word-inner', { yPercent: reduce ? 0 : 115 });
+      gsap.set('[data-link]', { drawSVG: reduce ? '100%' : '0%' });
+      gsap.set('[data-node]', { opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.6, transformOrigin: 'center' });
+      gsap.set('[data-reveal]', { opacity: 0, y: 26 });
+
+      function heroEntrance() {
+        if (!reduce) gsap.to('#bg-glow', { xPercent: -7, yPercent: 5, duration: 16, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+        const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+        if (reduce) {
+          gsap.set(['header [data-head]', '#hero [data-hero]'], { opacity: 1, y: 0 });
+        } else {
+          tl.to('header [data-head]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 })
+            .to('#hero [data-hero="eyebrow"]', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+            .to('.word-inner', { yPercent: 0, duration: 1, stagger: 0.09 }, '-=0.3')
+            .to('#hero [data-hero="sub"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, '-=0.7')
+            .to('[data-hero="blueprint"]', { opacity: 1, y: 0, duration: 0.8 }, '-=1.1')
+            .to('[data-link]', { drawSVG: '100%', duration: 0.9, stagger: 0.12, ease: 'power2.inOut' }, '-=0.6')
+            .to('[data-node]', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, ease: 'back.out(1.7)' }, '-=1')
+            .add(() => document.querySelectorAll('[data-link]').forEach((el) => el.classList.add('flow', 'live')), '-=0.2')
+            .add(() => document.querySelectorAll('[data-node]').forEach((n) => n.classList.add('live')));
+        }
         ScrollTrigger.batch('[data-reveal]', {
           start: 'top 86%',
-          onEnter: (els) =>
-            gsap.to(els, { opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'expo.out', overwrite: true }),
+          onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'expo.out', overwrite: true }),
+        });
+      }
+
+      function finishLoader() {
+        const loader = document.getElementById('loader');
+        const tl = gsap.timeline({ onComplete: () => { if (loader) loader.style.display = 'none'; ScrollTrigger.refresh(); } });
+        if (loader) tl.to(loader, { opacity: 0, duration: reduce ? 0.2 : 0.7, ease: 'power2.inOut' });
+        tl.add(heroEntrance, reduce ? '>' : '-=0.25');
+      }
+
+      if (reduce) {
+        if (statusEl) statusEl.textContent = 'System ready';
+        if (percentEl) percentEl.textContent = '100';
+        if (barSpan) gsap.set(barSpan, { scaleX: 1 });
+        placeBody(pTarget);
+        gsap.delayedCall(0.3, finishLoader);
+      } else {
+        const STEPS = [
+          { s: 'Reading almanac', to: 18 },
+          { s: 'Locating ' + (isMoon ? 'moon' : 'sun'), to: 44 },
+          { s: 'Phase · ' + LABELS[phase], to: 68 },
+          { s: 'Calibrating interface', to: 90 },
+          { s: 'System ready', to: 100 },
+        ];
+        const counter = { v: 0 };
+        const render = () => {
+          if (percentEl) percentEl.textContent = String(Math.round(counter.v)).padStart(3, '0');
+          if (barSpan) barSpan.style.transform = `scaleX(${counter.v / 100})`;
+          placeBody(0.06 + (counter.v / 100) * (pTarget - 0.06));
+        };
+        const boot = gsap.timeline({ onComplete: finishLoader, delay: 0.25 });
+        STEPS.forEach((step) => {
+          boot.call(() => { if (statusEl) statusEl.textContent = step.s; });
+          boot.to(counter, { v: step.to, duration: 0.5, ease: 'power2.out', onUpdate: render }, '+=0.06');
         });
       }
 

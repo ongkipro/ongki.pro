@@ -87,8 +87,8 @@ body {
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle,
-    rgb(93 123 255 / 0.2) 0%,
-    rgb(93 123 255 / 0.07) 34%,
+    rgb(var(--glow-rgb) / 0.2) 0%,
+    rgb(var(--glow-rgb) / 0.07) 34%,
     transparent 64%
   );
   filter: blur(16px);
@@ -254,3 +254,41 @@ html.locked #contact-email {
 @media (hover: hover) and (pointer: fine) {
   html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor .cap { cursor: none; }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Time-of-day phases (WIB) — accent/glow/bg shift with the sun       */
+/*  Tailwind v4 utilities read these CSS vars, so overriding per phase  */
+/*  re-tints the whole UI live.                                         */
+/* ------------------------------------------------------------------ */
+:root { --glow-rgb: 93 123 255; }
+
+html[data-phase='night'] { --color-bg: #04050a; --color-bg-soft: #090b14; --color-accent: #5d7bff; --color-accent-bright: #9fb4ff; --glow-rgb: 93 123 255; }
+html[data-phase='dawn']  { --color-bg: #0a0912; --color-bg-soft: #130f1e; --color-accent: #9a86ff; --color-accent-bright: #cdbcff; --glow-rgb: 150 130 255; }
+html[data-phase='day']   { --color-bg: #0a1420; --color-bg-soft: #0f1d2e; --color-accent: #38bdf8; --color-accent-bright: #9be0ff; --glow-rgb: 56 189 248; }
+html[data-phase='dusk']  { --color-bg: #100a10; --color-bg-soft: #1c0f14; --color-accent: #ff8a5b; --color-accent-bright: #ffc39b; --glow-rgb: 255 138 91; }
+
+body { transition: background-color 1.2s ease; }
+
+/* ------------------------------------------------------------------ */
+/*  Boot loader — celestial (sun/moon position) + tech                 */
+/* ------------------------------------------------------------------ */
+#loader {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--color-bg);
+  display: grid; place-items: center;
+  padding: 6vh 1.5rem;
+}
+.loader-inner { width: min(88vw, 440px); text-align: center; }
+.celestial { width: 100%; height: auto; overflow: visible; }
+.cel-arc { fill: none; stroke: rgb(255 255 255 / 0.12); stroke-width: 1; stroke-dasharray: 3 6; }
+.cel-horizon { stroke: rgb(255 255 255 / 0.16); stroke-width: 1; }
+.cel-tick { stroke: rgb(255 255 255 / 0.14); stroke-width: 1; }
+.cel-body { fill: var(--color-accent-bright); filter: drop-shadow(0 0 10px rgb(var(--glow-rgb) / 0.9)); }
+.cel-body-ring { fill: none; stroke: var(--color-accent); stroke-opacity: 0.5; }
+.cel-ray { stroke: var(--color-accent); stroke-width: 1; stroke-linecap: round; opacity: 0.55; }
+.loader-meta { margin-top: 1.6rem; font-family: var(--font-mono); }
+.loader-percent { font-size: 2.4rem; font-weight: 500; letter-spacing: -0.02em; color: #fff; font-family: var(--font-display); }
+.loader-bar { margin: 0.9rem auto 0; height: 1px; width: 100%; max-width: 260px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
+.loader-bar span { display: block; height: 100%; width: 100%; background: linear-gradient(to right, var(--color-accent), var(--color-accent-bright)); transform: scaleX(0); transform-origin: left; }
+.loader-status { margin-top: 0.9rem; font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgb(255 255 255 / 0.45); }
+.loader-phase { margin-top: 0.5rem; font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-accent); }
