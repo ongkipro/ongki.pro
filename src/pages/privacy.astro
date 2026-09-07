@@ -1,0 +1,290 @@
+---
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import { ArrowLeft, ShieldCheck, EyeOff, Server, Lock, Mail, ArrowUpRight } from '@lucide/astro';
+
+const GH_PATH =
+  'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z';
+const site = 'https://ongki.pro';
+const title = 'Privacy Policy — ongki.pro';
+const description =
+  'Privacy policy for ongki.pro. Minimal footprint by design: no tracking pixels, no advertising cookies, transparent data handling.';
+const canonicalURL = `${site}/privacy`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#04050a" />
+    <meta name="color-scheme" content="dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Ongki" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ongki.pro" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={`${site}/og.png`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16"><path d={GH_PATH}></path></symbol>
+    </svg>
+
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div id="bg-glow" class="bg-glow" aria-hidden="true"></div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <header class="bg-bg/75 fixed inset-x-0 top-0 z-50 border-b border-white/5 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
+        <a
+          href="/"
+          class="group inline-flex items-center gap-2 font-mono text-sm tracking-[0.22em] text-white/90 transition-colors hover:text-white"
+        >
+          <ArrowLeft
+            class="text-accent size-4 transition-transform duration-200 group-hover:-translate-x-1"
+          />
+          <span>ongki<span class="text-accent">.pro</span></span>
+        </a>
+        <div class="flex items-center gap-4 md:gap-5">
+          <div class="eyebrow hidden sm:flex">
+            <span class="relative flex size-1.5">
+              <span class="bg-accent relative inline-flex size-1.5 rounded-full"></span>
+            </span>
+            <span>Legal Protocol</span>
+          </div>
+          <a
+            href="https://github.com/ongkipro"
+            target="_blank"
+            rel="noopener"
+            aria-label="GitHub — ongkipro"
+            class="hover:text-accent text-white/55 transition-colors"
+          >
+            <svg class="size-[18px]" fill="currentColor" aria-hidden="true"
+              ><use href="#gh-mark"></use></svg
+            >
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="relative z-10 pt-28 pb-24 md:pt-36">
+      <div class="mx-auto max-w-4xl px-6 md:px-10">
+        <!-- Header -->
+        <div class="border-b border-white/8 pb-10">
+          <p class="eyebrow"><span class="tick"></span> <b>00</b> · Legal Protocol</p>
+          <h1 class="display mt-6 text-[clamp(2.4rem,7vw,4.2rem)] text-white">
+            Privacy <span
+              class="from-accent-bright via-accent to-accent-bright bg-gradient-to-br bg-clip-text text-transparent"
+              >Policy.</span
+            >
+          </h1>
+          <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60 md:text-lg">
+            Minimal footprint by design. Transparent, quiet, and fundamentally data-respecting.
+          </p>
+          <div
+            class="mt-8 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-white/40 uppercase"
+          >
+            <span class="text-accent rounded border border-white/10 px-2 py-0.5"
+              >Effective: September 2026</span
+            >
+            <span>·</span>
+            <span>Status: Active</span>
+            <span>·</span>
+            <span>Domain: ongki.pro</span>
+          </div>
+        </div>
+
+        <!-- Content sections -->
+        <div class="mt-12 space-y-10">
+          <!-- 01. Overview -->
+          <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
+            <div class="text-accent flex items-center gap-3">
+              <ShieldCheck class="size-5" />
+              <span class="font-mono text-xs tracking-[0.2em] uppercase">01 · Overview & Scope</span
+              >
+            </div>
+            <h2 class="font-display mt-4 text-xl font-semibold text-white">
+              Direct & Respectful Operation
+            </h2>
+            <p class="mt-3 text-[14.5px] leading-relaxed text-white/60">
+              This Privacy Policy applies to the website <strong class="text-white"
+                >ongki.pro</strong
+              >, owned and operated by <strong class="text-white">Ongki</strong> (Independent Digital
+              Growth Systems Builder based in Indonesia).
+            </p>
+            <p class="mt-3 text-[14.5px] leading-relaxed text-white/60">
+              The site exists to showcase engineering systems, architectural frameworks, and
+              production work. We do not sell consumer goods through this frontend, run intrusive
+              marketing trackers, or harvest personal data.
+            </p>
+          </section>
+
+          <!-- 02. Data Collection -->
+          <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
+            <div class="text-accent flex items-center gap-3">
+              <EyeOff class="size-5" />
+              <span class="font-mono text-xs tracking-[0.2em] uppercase"
+                >02 · Information Collection</span
+              >
+            </div>
+            <h2 class="font-display mt-4 text-xl font-semibold text-white">
+              No Tracking Pixels, No Ad Surveillance
+            </h2>
+            <div class="mt-5 space-y-4 text-[14.5px] leading-relaxed text-white/60">
+              <div class="bg-bg/60 rounded-xl border border-white/6 p-5">
+                <h3 class="font-mono text-xs tracking-wider text-white uppercase">
+                  A. Zero Third-Party Trackers
+                </h3>
+                <p class="mt-2 text-white/55">
+                  We do not embed Google Analytics, Meta Pixel, Hotjar, TikTok Pixel, fingerprinting
+                  scripts, or third-party behavioral trackers. You can browse this site without
+                  being tracked across the web.
+                </p>
+              </div>
+
+              <div class="bg-bg/60 rounded-xl border border-white/6 p-5">
+                <h3 class="font-mono text-xs tracking-wider text-white uppercase">
+                  B. Direct Correspondence
+                </h3>
+                <p class="mt-2 text-white/55">
+                  When you open a channel and email us at <code class="text-accent"
+                    >get@ongki.pro</code
+                  >, we receive the details you choose to send (your email address, name,
+                  organization, and message contents). This information is solely used to
+                  communicate with you about your inquiry or project.
+                </p>
+              </div>
+
+              <div class="bg-bg/60 rounded-xl border border-white/6 p-5">
+                <h3 class="font-mono text-xs tracking-wider text-white uppercase">
+                  C. Infrastructure & Edge Logs
+                </h3>
+                <p class="mt-2 text-white/55">
+                  Like any standard web service, our hosting infrastructure automatically processes
+                  technical HTTP request data (such as IP address, requesting browser user-agent,
+                  requested page, and timestamp). These logs are ephemeral and used exclusively for
+                  security diagnostics, DDoS mitigation, and traffic stability.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 03. Cookies & Storage -->
+          <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
+            <div class="text-accent flex items-center gap-3">
+              <Lock class="size-5" />
+              <span class="font-mono text-xs tracking-[0.2em] uppercase"
+                >03 · Cookies & Local Storage</span
+              >
+            </div>
+            <h2 class="font-display mt-4 text-xl font-semibold text-white">Minimal & Functional</h2>
+            <p class="mt-3 text-[14.5px] leading-relaxed text-white/60">
+              We do not set tracking or advertising cookies. Any client-side memory used on this
+              site is strictly functional (such as calculating the time-of-day visual phase in WIB
+              or detecting system <code class="text-accent">prefers-reduced-motion</code> settings). No
+              identifying state is persisted or transmitted to third-party databases.
+            </p>
+          </section>
+
+          <!-- 04. Hosting & Processors -->
+          <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
+            <div class="text-accent flex items-center gap-3">
+              <Server class="size-5" />
+              <span class="font-mono text-xs tracking-[0.2em] uppercase"
+                >04 · Infrastructure & Security</span
+              >
+            </div>
+            <h2 class="font-display mt-4 text-xl font-semibold text-white">
+              Enterprise Edge Security
+            </h2>
+            <div class="mt-4 space-y-3 text-[14.5px] leading-relaxed text-white/60">
+              <p>The site runs on modern, secure infrastructure:</p>
+              <ul class="list-inside list-disc space-y-2 text-white/55">
+                <li>
+                  <strong class="text-white">Hosting Platform:</strong> Vercel Inc. (Edge server delivery
+                  with automated TLS encryption).
+                </li>
+                <li>
+                  <strong class="text-white">DNS Management:</strong> Cloudflare, Inc. (Authoritative
+                  nameserver routing).
+                </li>
+                <li><strong class="text-white">Version Control:</strong> GitHub, Inc.</li>
+              </ul>
+              <p class="pt-2">
+                All connections are enforced over HTTPS (TLS 1.3) with HTTP Strict Transport
+                Security (HSTS) headers enabled.
+              </p>
+            </div>
+          </section>
+
+          <!-- 05. User Rights -->
+          <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
+            <div class="text-accent flex items-center gap-3">
+              <Mail class="size-5" />
+              <span class="font-mono text-xs tracking-[0.2em] uppercase"
+                >05 · Your Rights & Contact</span
+              >
+            </div>
+            <h2 class="font-display mt-4 text-xl font-semibold text-white">
+              Full Control Over Your Correspondence
+            </h2>
+            <p class="mt-3 text-[14.5px] leading-relaxed text-white/60">
+              You have the right to request access to, correction of, or complete deletion of any
+              communications or contact information previously sent to us.
+            </p>
+            <div
+              class="bg-bg/60 mt-6 flex flex-col gap-3 rounded-xl border border-white/6 p-5 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <span class="font-mono text-xs text-white/40 uppercase"
+                  >Direct Privacy Inquiries</span
+                >
+                <p class="mt-1 font-mono text-sm text-white">get@ongki.pro</p>
+              </div>
+              <a
+                href="mailto:get@ongki.pro?subject=Privacy%20Inquiry%20-%20ongki.pro"
+                class="border-accent/30 bg-accent/10 text-accent hover:border-accent hover:bg-accent/20 inline-flex items-center gap-2 rounded-lg border px-4 py-2 font-mono text-xs transition-colors"
+              >
+                Send Inquiry
+                <ArrowUpRight class="size-3.5" />
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- Footer -->
+        <div
+          class="mt-20 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/8 pt-8 font-mono text-[11px] tracking-[0.14em] text-white/30 uppercase"
+        >
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span>© 2026 ongki.pro · Building Digital Growth Systems</span>
+            <span class="text-white/15">·</span>
+            <a href="/" class="hover:text-accent text-white/45 transition-colors">Index</a>
+          </div>
+          <a
+            href="https://github.com/ongkipro"
+            target="_blank"
+            rel="noopener"
+            class="hover:text-accent inline-flex items-center gap-2 text-white/45 transition-colors"
+          >
+            <svg class="size-3.5" fill="currentColor" aria-hidden="true"
+              ><use href="#gh-mark"></use></svg
+            > github.com/ongkipro
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
